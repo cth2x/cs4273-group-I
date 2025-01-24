@@ -34,3 +34,13 @@ Muhammad Ali - SM3
 Connor Corbin - SM4
 
 ## Progress Plan NOT SURE
+
+### 1. Setup simple frontend page with JS
+choose what library we want to import the data table from, or make a table from scratch
+use data from CSV to fill the data table 
+### 2. Review features needed with the mentor
+Show demo of frontend, decide if any feature is missing, and update demo as needed
+### 3. Setup backend database based on requirements
+### 4. Connect database to frontend, host site on docker
+### 5. Check for any bugs, and show the product to the mentor to see if any changes need to be made
+
