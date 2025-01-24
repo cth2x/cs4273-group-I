@@ -8,10 +8,15 @@ app.use(bodyParser.json())
 app.post('/api/persons', (req, res) => {
   params=req.body
 
-  console.log(params['name'])
+  // Check for missing name or paramater
   if (!params['name'] || !params['id']) {
+    console.log("Missing name or Id!")
+    res.sendStatus(400)
+  } else if(params['age'] < 0) {
+    console.log("Invalid age!")
     res.sendStatus(400)
   } else {
+    console.log("Successfully added person: ", params)
     res.sendStatus(201)
   }
 })
