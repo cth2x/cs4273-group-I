@@ -37,7 +37,7 @@ Muhammad Ali - SM3
 
 Connor Corbin - SM4
 
-## Progress Plan NOT SURE
+## Progress Plan
 - [ ] Setup simple frontend page with JS.
   - [ ] Choose what library we want to import the data table from, or make a table from scratch.
   - [ ] Use data from CSV to fill the data table.
