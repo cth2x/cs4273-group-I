@@ -8,11 +8,10 @@ Our project builds a user-friendly database to manage and track missing persons 
 Since our project heavily relies on a database to display our information the database chosen needs to be able to handle a large amount of data efficiently. It also needs to be able to filter data and sort it. These factors led us to choose an SQL-based database and we decided on MySQL to be a good choice as it is a free option that seemed to offer good scalability. 
 
 ### Next.js
-
-
+To build a responsive and dynamic front-end, we chose Next.js, a popular React framework. It provides server-side rendering capabilities for improved performance, and allows for the creation of a highly interactive user interface that adapts seamlessly to various device types. This will be good for our project as it allows the users to quickly search for the missing persons they care about. 
 
 ### Docker
-It seemed that our group consisted of people with different operating systems so we decided to use Docker in deploying our app so that it would run consistently across all our devices. It also allows for ease of scalability as our project grows. 
+We chose Docker because our team works on different operating systems, and Docker enables us to simplify deployment, ensuring consistency across all devices. Additionally, Docker’s scalability makes it an excellent choice, allowing our database and application infrastructure to grow seamlessly as our project expands.
 
 ## Setup Instructions ?? NOT SURE WE DONT REALLY HAVE IT A PROGRAM YET
 Docker build
