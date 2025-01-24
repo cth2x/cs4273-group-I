@@ -35,4 +35,16 @@ class TestPostPerson < Test::Unit::TestCase
     params = { id: 125, age: 23 }
     assert_equal(400, post_person(params))
   end
+
+  def test_missing_id
+    params = {name: "Stephen Michael", age: 10}
+    assert_equal(400, post_person(params))
+  end
+
+  
+  def test_negative_age
+    params = {id: 126, name: "Sarah Steinbeck", age: -2}
+    assert_equal(400, post_person(params))
+  end
+  
 end
