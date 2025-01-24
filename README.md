@@ -22,7 +22,7 @@ cd CS4273_Group_I
 3. Install dependencies with `npm install`
 4. Run the server with `npm start`
 
-## Team Contributions
+## Team Contributers
 Mel Fillmore - Mentor
 
 Noah Zinn - Product Owner
