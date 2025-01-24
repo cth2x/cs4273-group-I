@@ -1,4 +1,4 @@
-# CS4274 Group I
+# CS4273 Group I
 
 ## Project Overview
 Our project builds a user-friendly database to manage and track missing persons in Oklahoma. The site will allow public access which will allow it to serve all Oklahomans. It will be able to store various characteristics related to the missing persons such as Photographs, Age, Gender, Race, Tribal Affiliation, Height, Weight, Hair Color, Eye Color, Date of last contact, and jurisdiction reported missing. Alongside these characteristics, it will also store Tribal Affiliation when applicable to allow it to better serve the tribal nations. The site will also contain various search, filtering, and exporting tools to allow researchers in the missing persons field to better access our data. When a missing person is found their information will be deleted from the database to meet the laws pertaining to this jurisdiction. 
