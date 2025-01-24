@@ -13,8 +13,24 @@ When choosing a framework it seemed a majority of our group seemed confident in 
 ### Docker
 It seemed that our group consisted of people with different operating systems so we decided to use Docker in deploying our app so that it would run consistently across all our devices. It also allows for ease of scalability as our project grows. 
 
-## Setup Instructions
+## Setup Instructions ?? NOT SURE WE DONT REALLY HAVE IT A PROGRAM YET
+Docker build
+
+Docker run
 
 ## Team Contributions
+Mel Fillmore - Mentor
 
-## Progress Plan
+Noah Zinn - Product Owner
+
+Cole Hicks - Quality Assurance
+
+Carson Siemens - SM1
+
+Tyler Vuong - SM2
+
+Muhammad Ali - SM3
+
+Connor Corbin - SM4
+
+## Progress Plan NOT SURE
