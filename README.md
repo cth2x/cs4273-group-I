@@ -1,32 +1,48 @@
 # CS4273 Group I
 
 ## Project Overview
+
 Our project constructs an public Oklahoma missing persons database, keeping information such as photos, demographics, and last contact information, and search and export functionality. Found cases are deleted to adhere to laws.
 
 ## Technologies Used
+
 ### MySQL
-Since our project heavily relies on a database to display our information the database chosen needs to be able to handle a large amount of data efficiently. It also needs to be able to filter data and sort it. These factors led us to choose an SQL-based database and we decided on MySQL to be a good choice as it is a free option that seemed to offer good scalability. 
+
+Since our project heavily relies on a database to display our information the database chosen needs to be able to handle a large amount of data efficiently. It also needs to be able to filter data and sort it. These factors led us to choose an SQL-based database and we decided on MySQL to be a good choice as it is a free option that seemed to offer good scalability.
 
 ### Next.js
-To build a responsive and dynamic front-end, we chose Next.js, a popular React framework. It provides server-side rendering capabilities for improved performance, and allows for the creation of a highly interactive user interface that adapts seamlessly to various device types. This will be good for our project as it allows the users to quickly search for the missing persons they care about. 
+
+To build a responsive and dynamic front-end, we chose Next.js, a popular React framework. It provides server-side rendering capabilities for improved performance, and allows for the creation of a highly interactive user interface that adapts seamlessly to various device types. This will be good for our project as it allows the users to quickly search for the missing persons they care about.
 
 ### Docker
+
 We chose Docker because our team works on different operating systems, and Docker enables us to simplify deployment, ensuring consistency across all devices. Additionally, Docker’s scalability makes it an excellent choice, allowing our database and application infrastructure to grow seamlessly as our project expands.
 
 ## Setup Instructions
+
 1. Clone the repository with `git clone https://github.com/cth2x/CS4273_Group_I.git`
 2. Navigate to the project directory.
-  ```bash
+
+```bash
 cd CS4273_Group_I
 ```
 
-Then run docker:
+Then run containers with docker:
+
+Build container initially (first time):
 
 ```bash
-docker-compose up --build
+docker compose up --build
+```
+
+Running every time afterwords:
+
+```bash
+docker compose up
 ```
 
 ## Team Contributers
+
 Mel Fillmore - Mentor
 
 Noah Zinn - Product Owner
@@ -42,6 +58,7 @@ Muhammad Ali - SM3
 Connor Corbin - SM4
 
 ## Progress Plan
+
 - [ ] Setup simple frontend page with JS.
   - [ ] Choose what library we want to import the data table from, or make a table from scratch.
   - [ ] Use data from CSV to fill the data table.
@@ -50,4 +67,3 @@ Connor Corbin - SM4
 - [ ] Setup backend database based on requirements
 - [ ] Connect database to frontend, host site on docker
 - [ ] Check for any bugs, and show the product to the mentor to see if any changes need to be made
-
