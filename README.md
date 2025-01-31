@@ -19,8 +19,12 @@ We chose Docker because our team works on different operating systems, and Docke
   ```bash
 cd CS4273_Group_I
 ```
-3. Install dependencies with `npm install`
-4. Run the server with `npm start`
+
+Then run docker:
+
+```bash
+docker-compose up --build
+```
 
 ## Team Contributers
 Mel Fillmore - Mentor
