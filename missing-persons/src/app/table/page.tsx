@@ -26,7 +26,7 @@ export default function TablePage() {
   ];
 
   return (
-    <div className="p-6">
+    <div className="p-6 h-full">
       <h1 className="text-2xl font-bold mb-4">Missing Persons Table</h1>
 
       <Link href="/">
