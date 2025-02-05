@@ -6,7 +6,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./missing-persons/:/code
+      - ./:/code
     user: "1000:998"
   db:
     image: mysql
