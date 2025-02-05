@@ -1,0 +1,10 @@
+services:
+  playwright:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    ports:
+      - "9323:9323"
+    volumes:
+      - ./missing-persons/playwright-report:/code/playwright-report
+    command: /bin/bash -c "npm run start & sleep 3 && npx playwright test"

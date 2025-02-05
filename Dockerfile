@@ -1,10 +1,8 @@
-FROM node:20
+FROM node:20 AS base
 
+FROM base AS dev
 WORKDIR /code
+CMD ["npm", "run", "dev"]
 
-COPY ./missing-persons/package.json package.json
-COPY ./missing-persons/package-lock.json package-lock.json
-
-RUN npm install
-
+ 
 

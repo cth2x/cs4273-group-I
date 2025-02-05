@@ -1,0 +1,7 @@
+FROM node:20
+WORKDIR /code
+COPY ./missing-persons /code/
+RUN npm install
+RUN npx playwright install --with-deps
+RUN npm run build
+CMD ["npx", "playwright", "test"]

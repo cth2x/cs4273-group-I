@@ -45,7 +45,8 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
   return (
     <ThemeProvider theme={tableTheme}>
       <div className="shadow-md rounded-lg">
-        <MaterialReactTable
+          <MaterialReactTable
+          id="missing-persons-table"
           columns={columns}
           data={data}
           enableRowSelection
