@@ -5,7 +5,7 @@ WORKDIR /code
 
 COPY ./missing-persons/package.json package.json
 COPY ./missing-persons/package-lock.json package-lock.json
-npm install
+RUN npm install
 CMD ["npm", "run", "dev"]
 
  
