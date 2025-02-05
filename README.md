@@ -1,69 +1,36 @@
-# CS4273 Group I
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Project Overview
+## Getting Started
 
-Our project constructs an public Oklahoma missing persons database, keeping information such as photos, demographics, and last contact information, and search and export functionality. Found cases are deleted to adhere to laws.
-
-## Technologies Used
-
-### MySQL
-
-Since our project heavily relies on a database to display our information the database chosen needs to be able to handle a large amount of data efficiently. It also needs to be able to filter data and sort it. These factors led us to choose an SQL-based database and we decided on MySQL to be a good choice as it is a free option that seemed to offer good scalability.
-
-### Next.js
-
-To build a responsive and dynamic front-end, we chose Next.js, a popular React framework. It provides server-side rendering capabilities for improved performance, and allows for the creation of a highly interactive user interface that adapts seamlessly to various device types. This will be good for our project as it allows the users to quickly search for the missing persons they care about.
-
-### Docker
-
-We chose Docker because our team works on different operating systems, and Docker enables us to simplify deployment, ensuring consistency across all devices. Additionally, Docker’s scalability makes it an excellent choice, allowing our database and application infrastructure to grow seamlessly as our project expands.
-
-## Setup Instructions
-
-1. Clone the repository with `git clone https://github.com/cth2x/CS4273_Group_I.git`
-2. Navigate to the project directory.
+First, run the development server:
 
 ```bash
-cd CS4273_Group_I
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
 ```
 
-Then run containers with docker:
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-Build container initially (first time):
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-```bash
-docker compose up --build
-```
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-Running every time afterwords:
+## Learn More
 
-```bash
-docker compose up
-```
+To learn more about Next.js, take a look at the following resources:
 
-## Team Contributers
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-Mel Fillmore - Mentor
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-Noah Zinn - Product Owner
+## Deploy on Vercel
 
-Cole Hicks - Quality Assurance
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Carson Siemens - SM1
-
-Tyler Vuong - SM2
-
-Muhammad Ali - SM3
-
-Connor Corbin - SM4
-
-## Progress Plan
-
-- [ ] Setup simple frontend page with JS.
-  - [ ] Choose what library we want to import the data table from, or make a table from scratch.
-  - [ ] Use data from CSV to fill the data table.
-- [ ] Review features needed with the mentor
-  - [ ] Show demo of frontend, decide if any feature is missing, and update demo as needed
-- [ ] Setup backend database based on requirements
-- [ ] Connect database to frontend, host site on docker
-- [ ] Check for any bugs, and show the product to the mentor to see if any changes need to be made
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

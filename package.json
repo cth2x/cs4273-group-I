@@ -1,21 +1,30 @@
 {
-  "name": "cs4273_group_i",
-  "version": "1.0.0",
-  "description": "## Project Overview Our project builds a user-friendly database to manage and track missing persons in Oklahoma. The site will allow public access which will allow it to serve all Oklahomans. It will be able to store various characteristics related to the missing persons such as Photographs, Age, Gender, Race, Tribal Affiliation, Height, Weight, Hair Color, Eye Color, Date of last contact, and jurisdiction reported missing. Alongside these characteristics, it will also store Tribal Affiliation when applicable to allow it to better serve the tribal nations. The site will also contain various search, filtering, and exporting tools to allow researchers in the missing persons field to better access our data. When a missing person is found their information will be deleted from the database to meet the laws pertaining to this jurisdiction.",
-  "main": "src/server.js",
+  "name": "missings-persons",
+  "version": "0.1.0",
+  "private": true,
   "scripts": {
-    "test": "./Tests/runtests.sh",
-    "start": "node src/server.js"
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "axios": "^1.7.9",
-    "body-parser": "^1.20.3",
-    "express": "^4.21.2",
-    "material-react-table": "^3.1.0"
+    "@mui/icons-material": "^6.4.2",
+    "@mui/material": "^6.4.2",
+    "@mui/x-date-pickers": "^7.25.0",
+    "material-react-table": "^3.1.0",
+    "next": "15.1.6",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
-    "jest": "^29.7.0"
+    "@playwright/test": "^1.50.1",
+    "@types/node": "20.17.16",
+    "@types/react": "19.0.8",
+    "@types/react-dom": "^19",
+    "@types/stylis": "^4.2.7",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1",
+    "typescript": "5.7.3"
   }
 }
