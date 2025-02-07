@@ -9,15 +9,23 @@ import {
 import { MaterialReactTable, MRT_ColumnDef } from "material-react-table";
 import { useMemo } from "react";
 
-type DataType = {
-  id: number;
-  name: string;
-  email: string;
+type MissingPersonType = {
+  id: string;
+    date_missing: string;
+    last_name: string;
+    first_name: string;
+    age: string;
+    missing_city: string;
+    missing_county: string;
+    missing_state: string;
+    sex: string;
+    race_ethnicity: string;
+    date_modified: string;
 };
 
 type TableComponentProps = {
-  columns: MRT_ColumnDef<DataType>[];
-  data: DataType[];
+  columns: MRT_ColumnDef<MissingPersonType>[];
+  data: MissingPersonType[];
 };
 
 const TableComponent = ({ columns, data }: TableComponentProps) => {
