@@ -6,7 +6,11 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { MaterialReactTable, MRT_ColumnDef } from "material-react-table";
+import {
+  MaterialReactTable,
+  MRT_ColumnDef,
+  useMaterialReactTable,
+} from "material-react-table";
 import { useMemo } from "react";
 
 type MissingPersonType = {
@@ -29,23 +33,23 @@ type TableComponentProps = {
 };
 
 const TableComponent = ({ columns, data }: TableComponentProps) => {
+  const table = useMaterialReactTable({
+    columns,
+    id: "missing-persons-table",
+    enableColumnOrdering: true,
+    enableColumnPinning: true,
+    data,
+    defaultColumn: {
+      minSize: 20, //allow columns to get smaller than default
+      maxSize: 9001, //allow columns to get larger than default
+      size: 100, //make columns wider by default
+    },
+  });
   return (
     <div className="shadow-md rounded-lg">
-      <MaterialReactTable
-        id="missing-persons-table"
-        columns={columns}
-        data={data}
-        enableRowSelection
-        enableColumnOrdering
-        enableColumnPinning
-      />
+      <MaterialReactTable table={table} />
     </div>
   );
-  //   return (
-  //     <div className="shadow-md bg-white dark:bg-gray-900 text-black dark:text-white">
-  //       <MaterialReactTable columns={columns} data={data} />
-  //     </div>
-  //   );
 };
 
 export default TableComponent;
