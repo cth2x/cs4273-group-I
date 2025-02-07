@@ -12,7 +12,7 @@ export default function Home() {
           A comprehensive resource to help view a missing person's status.
         </p>
         <Link href="/table">
-          <button className="mt-6 px-6 py-3 bg-blue-600  rounded-lg text-lg hover:bg-blue-700 transition">
+          <button className="mt-6 px-6 py-3 bg-blue-600 text-white  rounded-lg text-lg hover:bg-blue-700 transition">
             View Database
           </button>
         </Link>
