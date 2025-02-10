@@ -4,18 +4,24 @@ services:
       context: .
       target: dev
     ports:
-      - "3000:3000"  
+      - "3000:3000"  # Map the local port to the container's port
     volumes:
       - ./:/code
     user: "1000:998"
-
-  db: 
-    image: mysql
-    restart: always
-    ports:
-      - "3001:3306" 
     environment:
-      MYSQL_HOST: missing-persons-db.cngqqsemssns.us-east-2.rds.amazonaws.com
-      MYSQL_DATABASE: missing-persons-db
-      MYSQL_USER: admin
-      MYSQL_PASSWORD: missingdb
+      MYSQL_HOST: "missing-persons-db.cngqqsemssns.us-east-2.rds.amazonaws.com"  # Your DB host
+      MYSQL_USER: "admin"  # Database username
+      MYSQL_PASSWORD: "missingdb"  # Database password
+      MYSQL_DATABASE: "missing-persons-db"  # Database name
+  
+  # You don't need a separate db service anymore if you're using an external MySQL host
+  # db:
+  #   image: mysql
+  #   restart: always
+  #   ports:
+  #     - "3306:3306"
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: root_password
+  #     MYSQL_DATABASE: missing-persons-db
+  #     MYSQL_USER: admin
+  #     MYSQL_PASSWORD: missingdb
