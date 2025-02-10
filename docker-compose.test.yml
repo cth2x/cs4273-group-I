@@ -6,6 +6,5 @@ services:
       target: build
     ports:
       - "9323:9323"
-    volumes:
-      - ./playwright-report:/code/playwright-report
+      - "3000:3000"
     command: /bin/bash -c "npm run start & sleep 3 && npx playwright test"
