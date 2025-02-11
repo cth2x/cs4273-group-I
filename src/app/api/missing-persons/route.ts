@@ -1,24 +1,36 @@
 // src/app/api/missing-persons/route.ts
-import { NextApiRequest, NextApiResponse } from 'next';
+import { NextResponse } from 'next/server';
+import mysql, { RowDataPacket } from 'mysql2';
 import connection from '../../lib/db';
 
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method === 'GET') {
-    // Fetch missing persons data using raw SQL query
-    connection.query(
-      'SELECT * FROM missing_persons', // Your SQL query
-      (err, results) => {
-        if (err) {
-          res.status(500).json({ error: 'Database error' });
-          return;
-        }
-        res.status(200).json(results); // Send the results back as JSON
+// export async function GET() {
+  
+//     // Fetch missing persons data using raw SQL query
+//     connection.query(
+//       'SELECT * FROM person', // Your SQL query
+//       (err, results) => {
+//         if (err) {
+          
+//           return Response.json({ error: 'Database error' });
+//         }
+//         return Response.json(results);
+        
+//       }
+//     );
+  
+// }
+
+export async function GET() {
+  return new Promise((resolve) => {
+    connection.query('SELECT * FROM person', (err, results: RowDataPacket[]) => {
+      if (err) {
+        resolve(NextResponse.json({ error: 'Database error' }, { status: 500 }));
+      } else {
+        resolve(NextResponse.json(results, { status: 200 }));
       }
-    );
-  } else {
-    res.status(405).json({ error: 'Method Not Allowed' });
-  }
+    });
+  });
 }
 
 

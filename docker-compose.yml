@@ -12,7 +12,7 @@ services:
       MYSQL_HOST: "missing-persons-db.cngqqsemssns.us-east-2.rds.amazonaws.com"  # Your DB host
       MYSQL_USER: "admin"  # Database username
       MYSQL_PASSWORD: "missingdb"  # Database password
-      MYSQL_DATABASE: "missing-persons-db"  # Database name
+      MYSQL_DATABASE: "missing_persons"  # Database name
   
   # You don't need a separate db service anymore if you're using an external MySQL host
   # db:

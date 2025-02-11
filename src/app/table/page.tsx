@@ -15,15 +15,17 @@ export default function TablePage() {
     loadData();
   }, []);
 
+  
+
   const columns = [
       { accessorKey: "case_id", header: "ID" },
       { accessorKey: "first_name", header: "First Name"},
       { accessorKey: "last_name", header: "Last Name"},
       { accessorKey: "age", header: "Age" },
-      { accessorKey: "sex", header: "Sex" },
-      { accessorKey: "race_ethnicity", header: "Race / Ethnicity"},
-      { accessorKey: "date_missing", header: "Date Missing" },
-      { accessorKey: "missing_city", header: "City" },
+      { accessorKey: "gender", header: "Sex" },
+      { accessorKey: "race", header: "Race / Ethnicity"},
+      { accessorKey: "missing_date", header: "Date Missing" },
+      { accessorKey: "missing_location", header: "City" },
       { accessorKey: "missing_county", header: "County"},
       { accessorKey: "missing_state", header: "State"},
       { accessorKey: "date_modified", header: "Date modified"},
