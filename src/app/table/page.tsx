@@ -10,12 +10,30 @@ export default function TablePage() {
   useEffect(() => {
     async function loadData() {
       const result = await fetchMissingPersons();
-      setData(result);
+
+      // Transform data: Split "name" into "first_name" and "last_name"
+      const transformedData = result.map((person: any) => {
+        const [first_name, ...last_name] = person.name.split(" "); // Split at the first space
+        const [city, county, state] = person.missing_location.split(",").map((item) => item.trim());
+        const today = new Date().toISOString().split('T')[0]; 
+        return {
+          ...person,
+          first_name,
+          last_name: last_name.join(" "), // Join the remaining parts in case of multiple last names
+          city,
+          county,
+          state,
+          date_modified: today, //Update and add this field in db later instead of using hardcoded date
+        };
+      });
+
+      setData(transformedData);
     }
+
     loadData();
   }, []);
 
-  
+
 
   const columns = [
       { accessorKey: "case_id", header: "ID" },
@@ -25,9 +43,9 @@ export default function TablePage() {
       { accessorKey: "gender", header: "Sex" },
       { accessorKey: "race", header: "Race / Ethnicity"},
       { accessorKey: "missing_date", header: "Date Missing" },
-      { accessorKey: "missing_location", header: "City" },
-      { accessorKey: "missing_county", header: "County"},
-      { accessorKey: "missing_state", header: "State"},
+      { accessorKey: "city", header: "City" },
+      { accessorKey: "county", header: "County"},
+      { accessorKey: "state", header: "State"},
       { accessorKey: "date_modified", header: "Date modified"},
   ];
 
