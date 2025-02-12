@@ -12,24 +12,11 @@ import {
   useMaterialReactTable,
 } from "material-react-table";
 import { useMemo } from "react";
-
-type MissingPersonType = {
-  id: string;
-  date_missing: string;
-  last_name: string;
-  first_name: string;
-  age: string;
-  missing_city: string;
-  missing_county: string;
-  missing_state: string;
-  sex: string;
-  race_ethnicity: string;
-  date_modified: string;
-};
+import { MissingPerson } from "./table/page";
 
 type TableComponentProps = {
-  columns: MRT_ColumnDef<MissingPersonType>[];
-  data: MissingPersonType[];
+  columns: MRT_ColumnDef<MissingPerson>[];
+  data: MissingPerson[];
 };
 
 const TableComponent = ({ columns, data }: TableComponentProps) => {

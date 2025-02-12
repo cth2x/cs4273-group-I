@@ -3,6 +3,21 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import TableComponent from "../TableComponent";
 import { fetchMissingPersons } from "../utils/fetch";
+import { MRT_ColumnDef } from "material-react-table";
+
+export type MissingPerson = {
+  case_id: string;
+  first_name: string;
+  last_name: string;
+  age: string;
+  gender: string;
+  race: string;
+  missing_date: string;
+  city: string;
+  county: string;
+  state: string;
+  date_modified: string;
+};
 
 export default function TablePage() {
   const [data, setData] = useState([]);
@@ -14,8 +29,10 @@ export default function TablePage() {
       // Transform data: Split "name" into "first_name" and "last_name"
       const transformedData = result.map((person: any) => {
         const [first_name, ...last_name] = person.name.split(" "); // Split at the first space
-        const [city, county, state] = person.missing_location.split(",").map((item) => item.trim());
-        const today = new Date().toISOString().split('T')[0]; 
+        const [city, county, state] = person.missing_location
+          .split(",")
+          .map((item: string) => item.trim());
+        const today = new Date().toISOString().split("T")[0];
         return {
           ...person,
           first_name,
@@ -33,20 +50,24 @@ export default function TablePage() {
     loadData();
   }, []);
 
-
-
-  const columns = [
-      { accessorKey: "case_id", header: "ID" },
-      { accessorKey: "first_name", header: "First Name"},
-      { accessorKey: "last_name", header: "Last Name"},
-      { accessorKey: "age", header: "Age" },
-      { accessorKey: "gender", header: "Sex" },
-      { accessorKey: "race", header: "Race / Ethnicity"},
-      { accessorKey: "missing_date", header: "Date Missing" },
-      { accessorKey: "city", header: "City" },
-      { accessorKey: "county", header: "County"},
-      { accessorKey: "state", header: "State"},
-      { accessorKey: "date_modified", header: "Date modified"},
+  const columns: MRT_ColumnDef<MissingPerson>[] = [
+    { accessorKey: "case_id", header: "ID" },
+    { accessorKey: "first_name", header: "First Name" },
+    { accessorKey: "last_name", header: "Last Name" },
+    { accessorKey: "age", header: "Age" },
+    { accessorKey: "gender", header: "Sex" },
+    { accessorKey: "race", header: "Race / Ethnicity" },
+    // Search isn't working for date_missing yet, fix later
+    {
+      accessorKey: "missing_date",
+      header: "Date Missing",
+      Cell: ({ row }) =>
+        new Date(row.original.missing_date).toISOString().split("T")[0],
+    },
+    { accessorKey: "city", header: "City" },
+    { accessorKey: "county", header: "County" },
+    { accessorKey: "state", header: "State" },
+    { accessorKey: "date_modified", header: "Date modified" },
   ];
 
   return (
