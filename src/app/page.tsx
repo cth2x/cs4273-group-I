@@ -2,7 +2,16 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-6">
+    <div className="flex flex-col items-center justify-center min-h-screen p-6 relative">
+      {/* Login Button */}
+      <div className="absolute top-4 right-4">
+        <Link href="/login">
+          <button className="px-4 py-2 bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200 transition">
+            Login
+          </button>
+        </Link>
+      </div>
+
       {/* Hero Section */}
       <main className="flex flex-col items-center text-center mt-16">
         <h2 className="text-3xl font-bold">
