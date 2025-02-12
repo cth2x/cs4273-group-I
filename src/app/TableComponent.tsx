@@ -31,6 +31,15 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
       maxSize: 9001, //allow columns to get larger than default
       size: 100, //make columns wider by default
     },
+    // Get rid of this to drop the stripes on the table
+    muiTableBodyProps: {
+      sx: {
+        //stripe the rows, make odd rows a darker color
+        "& tr:nth-of-type(odd) > td": {
+          backgroundColor: "#f5f5f5",
+        },
+      },
+    },
   });
   return (
     <div className="shadow-md rounded-lg">
