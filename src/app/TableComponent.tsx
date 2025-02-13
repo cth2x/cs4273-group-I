@@ -5,6 +5,8 @@ import {
   ThemeProvider,
   useMediaQuery,
   useTheme,
+  IconButton,
+  Tooltip,
 } from "@mui/material";
 import {
   MaterialReactTable,
@@ -13,6 +15,7 @@ import {
 } from "material-react-table";
 import { useMemo } from "react";
 import { MissingPerson } from "./table/page";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
 type TableComponentProps = {
   columns: MRT_ColumnDef<MissingPerson>[];
@@ -42,9 +45,18 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
     },
   });
   return (
-    <div className="shadow-md rounded-lg">
-      <MaterialReactTable table={table} />
-    </div>
+    <>
+      <div className="fixed top-4 right-4 z-50">
+        <Tooltip title="Profile">
+          <IconButton size="large">
+            <AccountCircleIcon sx={{ fontSize: 32 }} />
+          </IconButton>
+        </Tooltip>
+      </div>
+      <div className="shadow-md rounded-lg">
+        <MaterialReactTable table={table} />
+      </div>
+    </>
   );
 };
 
