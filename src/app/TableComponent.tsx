@@ -29,7 +29,7 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
     defaultColumn: {
       minSize: 20, //allow columns to get smaller than default
       maxSize: 9001, //allow columns to get larger than default
-      size: 100, //make columns wider by default
+      size: 40, //make columns wider by default
     },
     // Get rid of this to drop the stripes on the table
     muiTableBodyProps: {
