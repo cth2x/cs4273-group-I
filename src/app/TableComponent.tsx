@@ -7,13 +7,15 @@ import {
   useTheme,
   IconButton,
   Tooltip,
+  Menu,
+  MenuItem,
 } from "@mui/material";
 import {
   MaterialReactTable,
   MRT_ColumnDef,
   useMaterialReactTable,
 } from "material-react-table";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { MissingPerson } from "./table/page";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
@@ -23,6 +25,17 @@ type TableComponentProps = {
 };
 
 const TableComponent = ({ columns, data }: TableComponentProps) => {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   const table = useMaterialReactTable({
     columns,
     id: "missing-persons-table",
@@ -48,10 +61,20 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
     <>
       <div className="fixed top-4 right-4 z-50">
         <Tooltip title="Profile">
-          <IconButton size="large">
+          <IconButton size="large" onClick={handleClick}>
             <AccountCircleIcon sx={{ fontSize: 32 }} />
           </IconButton>
         </Tooltip>
+        <Menu
+          anchorEl={anchorEl}
+          open={open}
+          onClose={handleClose}
+          transformOrigin={{ horizontal: "right", vertical: "top" }}
+          anchorOrigin={{ horizontal: "right", vertical: "bottom" }}>
+          <MenuItem onClick={handleClose}>My Profile</MenuItem>
+          <MenuItem onClick={handleClose}>Settings</MenuItem>
+          <MenuItem onClick={handleClose}>Logout</MenuItem>
+        </Menu>
       </div>
       <div className="shadow-md rounded-lg">
         <MaterialReactTable table={table} />
