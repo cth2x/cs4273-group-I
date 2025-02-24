@@ -67,6 +67,8 @@ export default function TablePage() {
     { accessorKey: "city", header: "City" },
     { accessorKey: "county", header: "County" },
     { accessorKey: "state", header: "State" },
+    { accessorKey: "tribal_affiliation", header: "Tribal Affiliation/Enrollment"},
+    { accessorKey: "associated_tribes", header: "Associated Tribes"}, 
     { accessorKey: "date_modified", header: "Date modified" },
   ];
 
