@@ -18,6 +18,7 @@ import {
 import { useMemo, useState } from "react";
 import { MissingPerson } from "./table/page";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import { useRouter } from "next/navigation";
 
 type TableComponentProps = {
   columns: MRT_ColumnDef<MissingPerson>[];
@@ -27,6 +28,7 @@ type TableComponentProps = {
 const TableComponent = ({ columns, data }: TableComponentProps) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+  const router = useRouter();
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -34,6 +36,10 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleRowClick = (row: any) => {
+    router.push(`/profile/${row.original.case_id}`);
   };
 
   const table = useMaterialReactTable({
@@ -56,7 +62,17 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
         },
       },
     },
+    muiTableBodyRowProps: ({ row }) => ({
+      onClick: () => handleRowClick(row),
+      sx: { 
+        cursor: 'pointer',
+        '&:hover': {
+          backgroundColor: '#f0f9ff', // Light blue hover effect
+        } 
+      },
+    }),
   });
+  
   return (
     <>
       <div className="fixed top-4 right-4 z-50">

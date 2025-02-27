@@ -10,4 +10,13 @@ export const fetchMissingPersons = async () => {
     }
   };
 
-  
+  export const fetchMissingPersonById = async (id: string) => {
+    try {
+      const response = await fetch(`/api/missing-persons/${id}`);
+      if (!response.ok) throw new Error("Failed to fetch person data");
+      return await response.json();
+    } catch (error) {
+      console.error("Error fetching person data:", error);
+      return null;
+    }
+  };
