@@ -1,9 +1,27 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
+import { FormEvent } from "react";
+import { useRouter } from "next/navigation"
 
 export default function Home() {
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const router = useRouter();
+  
+  async function login(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+
+    const formData = new FormData(event.currentTarget)
+    const response = await fetch('/api/login', {
+      method: 'POST',
+      body: formData
+    })
+
+    if (response.ok) {
+      router.push('/admin')
+    } 
+  }
+
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-6 relative">
@@ -28,13 +46,14 @@ export default function Home() {
                 ✕
               </button>
             </div>
-            <form className="space-y-4">
+            <form className="space-y-4" onSubmit={login}>
               <div>
                 <label className="block text-sm font-medium text-gray-700">
                   Email
                 </label>
                 <input
                   type="email"
+		  name="email"
                   className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
                 />
               </div>
@@ -44,6 +63,7 @@ export default function Home() {
                 </label>
                 <input
                   type="password"
+		  name="password"
                   className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
                 />
               </div>
