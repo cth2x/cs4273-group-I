@@ -78,7 +78,7 @@ export default function TablePage() {
   ];
 
   return (
-    <div className="p-6 h-full">
+    <div className="p-6 h-full ">
       <div className="fixed top-4 left-4 z-50">
         <Link href="/">
           <Button
@@ -86,7 +86,11 @@ export default function TablePage() {
             color="secondary"
             startIcon={<ArrowBackIcon />}
             size="medium"
-            sx={{ minWidth: "100px" }}>
+            sx={{
+              minWidth: "100px",
+              backgroundColor: "#1976D2", // Custom blue (Material UI primary)
+              "&:hover": { backgroundColor: "#1565C0" }, // Darker blue on hover
+            }}>
             Back
           </Button>
         </Link>

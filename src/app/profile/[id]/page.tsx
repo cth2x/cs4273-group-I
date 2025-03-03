@@ -16,14 +16,14 @@ export default function ProfilePage() {
       setLoading(true);
       try {
         const allPersons = await fetchMissingPersons();
-        
+
         // Transform data similar to table page
         const transformedData = allPersons.map((p: any) => {
           const [first_name, ...last_name] = p.name.split(" ");
           const [city, county, state] = p.missing_location
             .split(",")
             .map((item: string) => item.trim());
-          
+
           return {
             ...p,
             first_name,
@@ -82,58 +82,75 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen p-8">
-      <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md overflow-hidden">
-        {/* Header with name and case ID */}
-        <div className="bg-blue-600 p-6 text-white">
-          <div className="flex justify-between items-center">
-            <h1 className="text-3xl font-bold">
+    <div className="min-h-screen p-10">
+      <div className="max-w-6xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
+        {/* Header with profile picture, name, and case ID */}
+        <div className="bg-blue-600 p-8 text-white flex items-center">
+          {/* Square placeholder for profile picture */}
+          <div className="w-28 h-28 bg-gray-300 rounded-md mr-6 flex items-center justify-center text-sm text-gray-600">
+            Profile Pic
+          </div>
+
+          {/* Name and case ID */}
+          <div className="flex-grow">
+            <h1 className="text-4xl font-bold">
               {person.first_name} {person.last_name}
             </h1>
-            <div className="text-right">
-              <div className="text-sm opacity-90">Case ID</div>
-              <div className="text-xl font-mono">{person.case_id}</div>
-            </div>
+          </div>
+
+          <div className="text-right">
+            <div className="text-lg opacity-90">Case ID</div>
+            <div className="text-2xl font-mono">{person.case_id}</div>
           </div>
         </div>
 
         {/* Main content */}
-        <div className="p-6">
+        <div className="p-8">
           {/* Back button */}
           <Link href="/table">
-            <button className="mb-6 px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 flex items-center">
+            <button className="mb-8 px-5 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 flex items-center">
               <span>← Back to Table</span>
             </button>
           </Link>
 
           {/* Profile content in a grid layout */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Left column - basic details */}
             <div>
-              <h2 className="text-xl font-semibold mb-4 text-gray-800 border-b pb-2">
+              <h2 className="text-2xl font-semibold mb-5 text-gray-800 border-b pb-3">
                 Personal Information
               </h2>
-              
-              <div className="space-y-3">
+
+              <div className="space-y-4">
                 <InfoItem label="Age" value={person.age} />
                 <InfoItem label="Gender" value={person.gender} />
                 <InfoItem label="Race/Ethnicity" value={person.race} />
-                {/* {person.tribal_affiliation && (
+              </div>
+              
+            </div>
+            <div>
+            <h2 className="text-2xl font-semibold mb-5 text-gray-800 border-b pb-3">
+                Tribal Information
+              </h2>
+              <div className="space-y-4">
+                <InfoItem label="Tribal Affiliation" value={"Affiliation"} />
+                <InfoItem label="Associated Tribe" value={"Association"} />
+              </div>
+              </div>
+
+            {/* {person.tribal_affiliation && (
                   <InfoItem label="Tribal Affiliation" value={person.tribal_affiliation} />
                 )}
                 {person.associated_tribes && (
                   <InfoItem label="Associated Tribes" value={person.associated_tribes} />
                 )} */}
-              </div>
-            </div>
-
             {/* Right column - location details */}
             <div>
-              <h2 className="text-xl font-semibold mb-4 text-gray-800 border-b pb-2">
+              <h2 className="text-2xl font-semibold mb-5 text-gray-800 border-b pb-3">
                 Location Information
               </h2>
-              
-              <div className="space-y-3">
+
+              <div className="space-y-4">
                 <InfoItem 
                   label="Missing Since" 
                   value={new Date(person.missing_date).toLocaleDateString()} 
@@ -150,13 +167,13 @@ export default function ProfilePage() {
           </div>
 
           {/* Additional information section */}
-          <div className="mt-8">
-            <h2 className="text-xl font-semibold mb-4 text-gray-800 border-b pb-2">
+          <div className="mt-10">
+            <h2 className="text-2xl font-semibold mb-5 text-gray-800 border-b pb-3">
               Additional Information
             </h2>
-            
-            <div className="bg-gray-50 p-4 rounded-md">
-              <p className="text-gray-700">
+
+            <div className="bg-gray-100 p-5 rounded-lg">
+              <p className="text-gray-700 text-lg">
                 This information is maintained by the Missing Persons Database. If you have any information 
                 regarding this person, please contact your local authorities.
               </p>
@@ -166,6 +183,7 @@ export default function ProfilePage() {
       </div>
     </div>
   );
+
 }
 
 // Helper component for displaying information items
