@@ -101,7 +101,8 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
           color="primary"
           startIcon={<LogoutIcon />}
           onClick={handleLogoutClick}
-          size="medium">
+          size="medium"
+          sx={{ minWidth: "100px" }}>
           Logout
         </Button>
       </div>
@@ -111,15 +112,22 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
         onClose={handleCloseDialog}
         aria-labelledby="logout-dialog-title"
         aria-describedby="logout-dialog-description">
-        <DialogTitle id="logout-dialog-title">Confirm Logout</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="logout-dialog-description">
+        <DialogTitle
+          id="logout-dialog-title"
+          sx={{ textAlign: "center", paddingBottom: 1 }}>
+          Confirm Logout
+        </DialogTitle>
+        <DialogContent sx={{ paddingTop: 0, paddingBottom: 1 }}>
+          <DialogContentText
+            id="logout-dialog-description"
+            sx={{ textAlign: "center" }}>
             Are you sure you want to log out? You will still be able to view the
             table, but you won't be able to make any changes until you log in
             again.
           </DialogContentText>
         </DialogContent>
-        <DialogActions>
+        <DialogActions
+          sx={{ justifyContent: "center", paddingTop: 0, paddingBottom: 2 }}>
           <Button onClick={handleCloseDialog} color="primary">
             Cancel
           </Button>

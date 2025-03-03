@@ -4,6 +4,8 @@ import Link from "next/link";
 import TableComponent from "../TableComponent";
 import { fetchMissingPersons } from "../utils/fetch";
 import { MRT_ColumnDef } from "material-react-table";
+import { Button } from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 export type MissingPerson = {
   case_id: string;
@@ -67,22 +69,36 @@ export default function TablePage() {
     { accessorKey: "city", header: "City" },
     { accessorKey: "county", header: "County" },
     { accessorKey: "state", header: "State" },
-    { accessorKey: "tribal_affiliation", header: "Tribal Affiliation/Enrollment"},
-    { accessorKey: "associated_tribes", header: "Associated Tribes"}, 
+    {
+      accessorKey: "tribal_affiliation",
+      header: "Tribal Affiliation/Enrollment",
+    },
+    { accessorKey: "associated_tribes", header: "Associated Tribes" },
     { accessorKey: "date_modified", header: "Date modified" },
   ];
 
   return (
     <div className="p-6 h-full">
-      <h1 className="text-2xl font-bold mb-4">Missing Persons Table</h1>
+      <div className="fixed top-4 left-4 z-50">
+        <Link href="/">
+          <Button
+            variant="contained"
+            color="secondary"
+            startIcon={<ArrowBackIcon />}
+            size="medium"
+            sx={{ minWidth: "100px" }}>
+            Back
+          </Button>
+        </Link>
+      </div>
 
-      <Link href="/">
-        <button className="mb-4 px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600">
-          Back to Home
-        </button>
-      </Link>
+      <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50">
+        <h1 className="text-2xl font-bold">Missing Persons Table</h1>
+      </div>
 
-      <TableComponent columns={columns} data={data} />
+      <div className="pt-16">
+        <TableComponent columns={columns} data={data} />
+      </div>
     </div>
   );
 }
