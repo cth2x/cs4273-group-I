@@ -19,6 +19,8 @@ export type MissingPerson = {
   county: string;
   state: string;
   date_modified: string;
+  tribe_status: string;
+  tribe_name: string;
 };
 
 export default function TablePage() {
@@ -43,6 +45,9 @@ export default function TablePage() {
           county,
           state,
           date_modified: today, //Update and add this field in db later instead of using hardcoded date
+          tribe_status: person.tribe_status,
+          tribe_name: person.tribe_name,
+
         };
       });
 
@@ -70,10 +75,10 @@ export default function TablePage() {
     { accessorKey: "county", header: "County" },
     { accessorKey: "state", header: "State" },
     {
-      accessorKey: "tribal_affiliation",
+      accessorKey: "tribe_status",
       header: "Tribal Affiliation/Enrollment",
     },
-    { accessorKey: "associated_tribes", header: "Associated Tribes" },
+    { accessorKey: "tribe_name", header: "Associated Tribes" },
     { accessorKey: "date_modified", header: "Date modified" },
   ];
 
