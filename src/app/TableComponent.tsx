@@ -8,6 +8,11 @@ import {
   IconButton,
   Tooltip,
   Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from "@mui/material";
 import {
   MaterialReactTable,
@@ -26,18 +31,32 @@ type TableComponentProps = {
 
 const TableComponent = ({ columns, data }: TableComponentProps) => {
   const router = useRouter();
+  const [openLogoutDialog, setOpenLogoutDialog] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  const handleLogoutClick = () => {
+    setOpenLogoutDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenLogoutDialog(false);
+  };
 
   const handleLogout = async () => {
     try {
+      setIsLoggingOut(true);
       const response = await fetch("/api/logout", {
         method: "POST",
       });
 
       if (response.ok) {
-        router.push("/");
+        setIsLoggingOut(false);
+        setOpenLogoutDialog(false);
       }
     } catch (error) {
       console.error("Logout failed:", error);
+      setIsLoggingOut(false);
+      setOpenLogoutDialog(false);
     }
   };
 
@@ -52,14 +71,12 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
     enableColumnPinning: true,
     data,
     defaultColumn: {
-      minSize: 20, //allow columns to get smaller than default
-      maxSize: 9001, //allow columns to get larger than default
-      size: 40, //make columns wider by default
+      minSize: 20,
+      maxSize: 9001,
+      size: 40,
     },
-    // Get rid of this to drop the stripes on the table
     muiTableBodyProps: {
       sx: {
-        //stripe the rows, make odd rows a darker color
         "& tr:nth-of-type(odd) > td": {
           backgroundColor: "#f5f5f5",
         },
@@ -70,7 +87,7 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
       sx: {
         cursor: "pointer",
         "&:hover": {
-          backgroundColor: "#f0f9ff", // Light blue hover effect
+          backgroundColor: "#f0f9ff",
         },
       },
     }),
@@ -83,11 +100,39 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
           variant="contained"
           color="primary"
           startIcon={<LogoutIcon />}
-          onClick={handleLogout}
+          onClick={handleLogoutClick}
           size="medium">
           Logout
         </Button>
       </div>
+
+      <Dialog
+        open={openLogoutDialog}
+        onClose={handleCloseDialog}
+        aria-labelledby="logout-dialog-title"
+        aria-describedby="logout-dialog-description">
+        <DialogTitle id="logout-dialog-title">Confirm Logout</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="logout-dialog-description">
+            Are you sure you want to log out? You will still be able to view the
+            table, but you won't be able to make any changes until you log in
+            again.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} color="primary">
+            Cancel
+          </Button>
+          <Button
+            onClick={handleLogout}
+            color="error"
+            variant="contained"
+            disabled={isLoggingOut}>
+            {isLoggingOut ? "Logging out..." : "Logout"}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
       <div className="shadow-md rounded-lg">
         <MaterialReactTable table={table} />
       </div>
