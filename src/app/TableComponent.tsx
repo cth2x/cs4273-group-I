@@ -7,8 +7,7 @@ import {
   useTheme,
   IconButton,
   Tooltip,
-  Menu,
-  MenuItem,
+  Button,
 } from "@mui/material";
 import {
   MaterialReactTable,
@@ -17,7 +16,7 @@ import {
 } from "material-react-table";
 import { useMemo, useState } from "react";
 import { MissingPerson } from "./table/page";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import LogoutIcon from "@mui/icons-material/Logout";
 import { useRouter } from "next/navigation";
 
 type TableComponentProps = {
@@ -26,16 +25,20 @@ type TableComponentProps = {
 };
 
 const TableComponent = ({ columns, data }: TableComponentProps) => {
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
   const router = useRouter();
 
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
+  const handleLogout = async () => {
+    try {
+      const response = await fetch("/api/logout", {
+        method: "POST",
+      });
 
-  const handleClose = () => {
-    setAnchorEl(null);
+      if (response.ok) {
+        router.push("/");
+      }
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
   };
 
   const handleRowClick = (row: any) => {
@@ -64,33 +67,26 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
     },
     muiTableBodyRowProps: ({ row }) => ({
       onClick: () => handleRowClick(row),
-      sx: { 
-        cursor: 'pointer',
-        '&:hover': {
-          backgroundColor: '#f0f9ff', // Light blue hover effect
-        } 
+      sx: {
+        cursor: "pointer",
+        "&:hover": {
+          backgroundColor: "#f0f9ff", // Light blue hover effect
+        },
       },
     }),
   });
-  
+
   return (
     <>
       <div className="fixed top-4 right-4 z-50">
-        <Tooltip title="Profile">
-          <IconButton size="large" onClick={handleClick}>
-            <AccountCircleIcon sx={{ fontSize: 32 }} />
-          </IconButton>
-        </Tooltip>
-        <Menu
-          anchorEl={anchorEl}
-          open={open}
-          onClose={handleClose}
-          transformOrigin={{ horizontal: "right", vertical: "top" }}
-          anchorOrigin={{ horizontal: "right", vertical: "bottom" }}>
-          <MenuItem onClick={handleClose}>My Profile</MenuItem>
-          <MenuItem onClick={handleClose}>Settings</MenuItem>
-          <MenuItem onClick={handleClose}>Logout</MenuItem>
-        </Menu>
+        <Button
+          variant="contained"
+          color="primary"
+          startIcon={<LogoutIcon />}
+          onClick={handleLogout}
+          size="medium">
+          Logout
+        </Button>
       </div>
       <div className="shadow-md rounded-lg">
         <MaterialReactTable table={table} />
