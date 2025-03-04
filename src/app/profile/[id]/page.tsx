@@ -133,17 +133,16 @@ export default function ProfilePage() {
                 Tribal Information
               </h2>
               <div className="space-y-4">
-                <InfoItem label="Tribal Affiliation" value={"Affiliation"} />
-                <InfoItem label="Associated Tribe" value={"Association"} />
+              {person.tribe_status && (
+                  <InfoItem label="Tribal Affiliation" value={person.tribe_status} />
+                )}
+                {person.tribe_name && (
+                  <InfoItem label="Associated Tribes" value={person.tribe_name} />
+                )}
               </div>
               </div>
 
-            {/* {person.tribal_affiliation && (
-                  <InfoItem label="Tribal Affiliation" value={person.tribal_affiliation} />
-                )}
-                {person.associated_tribes && (
-                  <InfoItem label="Associated Tribes" value={person.associated_tribes} />
-                )} */}
+            
             {/* Right column - location details */}
             <div>
               <h2 className="text-2xl font-semibold mb-5 text-gray-800 border-b pb-3">
@@ -157,7 +156,6 @@ export default function ProfilePage() {
                 />
                 <InfoItem label="City" value={person.city} />
                 <InfoItem label="County" value={person.county} />
-                <InfoItem label="State" value={person.state} />
                 <InfoItem 
                   label="Last Updated" 
                   value={new Date(person.date_modified).toLocaleDateString()} 
