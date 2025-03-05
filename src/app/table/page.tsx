@@ -1,4 +1,4 @@
-"use client"; // Use this because data fetching happens on the client-side
+"use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import TableComponent from "../TableComponent";
@@ -17,9 +17,10 @@ export type MissingPerson = {
   missing_date: string;
   city: string;
   county: string;
+  state: string;
   date_modified: string;
-  tribe_status: string;
-  tribe_name: string;
+  tribes: string[];
+  tribe_statuses: string[];
 };
 
 export default function TablePage() {
@@ -31,7 +32,7 @@ export default function TablePage() {
 
       // Transform data: Split "name" into "first_name" and "last_name"
       const transformedData = result.map((person: any) => {
-        const [first_name, ...last_name] = person.name.split(" "); // Split at the first space
+        const [first_name, ...last_name] = person.name.split(" ");
         const [city, county, state] = person.missing_location
           .split(",")
           .map((item: string) => item.trim());
@@ -39,13 +40,11 @@ export default function TablePage() {
         return {
           ...person,
           first_name,
-          last_name: last_name.join(" "), // Join the remaining parts in case of multiple last names
+          last_name: last_name.join(" "),
           city,
           county,
-          date_modified: today, //Update and add this field in db later instead of using hardcoded date
-          tribe_status: person.tribe_status,
-          tribe_name: person.tribe_name,
-
+          state,
+          date_modified: today,
         };
       });
 
@@ -62,7 +61,6 @@ export default function TablePage() {
     { accessorKey: "age", header: "Age" },
     { accessorKey: "gender", header: "Sex" },
     { accessorKey: "race", header: "Race / Ethnicity" },
-    // Search isn't working for date_missing yet, fix later
     {
       accessorKey: "missing_date",
       header: "Date Missing",
@@ -71,11 +69,17 @@ export default function TablePage() {
     },
     { accessorKey: "city", header: "City" },
     { accessorKey: "county", header: "County" },
+    { accessorKey: "state", header: "State" },
     {
-      accessorKey: "tribe_status",
-      header: "Tribal Affiliation/Enrollment",
+      accessorKey: "tribe_statuses",
+      header: "Tribal Statuses",
+      Cell: ({ row }) => row.original.tribe_statuses?.join(", ") || "N/A"
     },
-    { accessorKey: "tribe_name", header: "Associated Tribes" },
+    {
+      accessorKey: "tribes",
+      header: "Associated Tribes",
+      Cell: ({ row }) => row.original.tribes?.join(", ") || "N/A"
+    },
     { accessorKey: "date_modified", header: "Date modified" },
   ];
 
@@ -90,8 +94,8 @@ export default function TablePage() {
             size="medium"
             sx={{
               minWidth: "100px",
-              backgroundColor: "#1976D2", // Custom blue (Material UI primary)
-              "&:hover": { backgroundColor: "#1565C0" }, // Darker blue on hover
+              backgroundColor: "#1976D2",
+              "&:hover": { backgroundColor: "#1565C0" },
             }}>
             Back
           </Button>

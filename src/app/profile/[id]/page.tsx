@@ -126,23 +126,25 @@ export default function ProfilePage() {
                 <InfoItem label="Gender" value={person.gender} />
                 <InfoItem label="Race/Ethnicity" value={person.race} />
               </div>
-              
             </div>
+
+            {/* Tribal Information column */}
             <div>
-            <h2 className="text-2xl font-semibold mb-5 text-gray-800 border-b pb-3">
+              <h2 className="text-2xl font-semibold mb-5 text-gray-800 border-b pb-3">
                 Tribal Information
               </h2>
               <div className="space-y-4">
-              {person.tribe_status && (
-                  <InfoItem label="Tribal Affiliation" value={person.tribe_status} />
-                )}
-                {person.tribe_name && (
-                  <InfoItem label="Associated Tribes" value={person.tribe_name} />
-                )}
+                <MultiInfoItem 
+                  label="Tribal Statuses" 
+                  values={person.tribe_statuses || []} 
+                />
+                <MultiInfoItem 
+                  label="Associated Tribes" 
+                  values={person.tribes || []} 
+                />
               </div>
-              </div>
+            </div>
 
-            
             {/* Right column - location details */}
             <div>
               <h2 className="text-2xl font-semibold mb-5 text-gray-800 border-b pb-3">
@@ -156,6 +158,7 @@ export default function ProfilePage() {
                 />
                 <InfoItem label="City" value={person.city} />
                 <InfoItem label="County" value={person.county} />
+                <InfoItem label="State" value={person.state} />
                 <InfoItem 
                   label="Last Updated" 
                   value={new Date(person.date_modified).toLocaleDateString()} 
@@ -181,15 +184,26 @@ export default function ProfilePage() {
       </div>
     </div>
   );
-
 }
 
-// Helper component for displaying information items
+// Helper component for displaying single information items
 function InfoItem({ label, value }: { label: string; value: string }) {
   return (
     <div>
       <span className="text-gray-600 font-medium">{label}:</span>{" "}
       <span className="text-gray-900">{value || "N/A"}</span>
+    </div>
+  );
+}
+
+// Helper component for displaying multiple information items
+function MultiInfoItem({ label, values }: { label: string; values: string[] }) {
+  return (
+    <div>
+      <span className="text-gray-600 font-medium">{label}:</span>{" "}
+      <span className="text-gray-900">
+        {values.length > 0 ? values.join(", ") : "N/A"}
+      </span>
     </div>
   );
 }
