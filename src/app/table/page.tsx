@@ -17,10 +17,11 @@ export type MissingPerson = {
   missing_date: string;
   city: string;
   county: string;
-  state: string;
   date_modified: string;
   tribes: string[];
   tribe_statuses: string[];
+  classification: string;
+  category_of_missing: string;
 };
 
 export default function TablePage() {
@@ -43,8 +44,9 @@ export default function TablePage() {
           last_name: last_name.join(" "),
           city,
           county,
-          state,
           date_modified: today,
+          classification: person.classification || "N/A",
+          category_of_missing: person.classification || "N/A"
         };
       });
 
@@ -69,7 +71,7 @@ export default function TablePage() {
     },
     { accessorKey: "city", header: "City" },
     { accessorKey: "county", header: "County" },
-    { accessorKey: "state", header: "State" },
+    
     {
       accessorKey: "tribe_statuses",
       header: "Tribal Statuses",
@@ -79,6 +81,11 @@ export default function TablePage() {
       accessorKey: "tribes",
       header: "Associated Tribes",
       Cell: ({ row }) => row.original.tribes?.join(", ") || "N/A"
+    },
+    {
+      accessorKey: "classification", 
+      header: "Category of Missing",
+      Cell: ({ row }) => row.original.classification || "N/A"
     },
     { accessorKey: "date_modified", header: "Date modified" },
   ];

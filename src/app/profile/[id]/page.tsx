@@ -32,6 +32,8 @@ export default function ProfilePage() {
             county,
             state,
             date_modified: new Date().toISOString().split("T")[0],
+            classification: p.classification || "N/A",
+            category_of_missing: p.classification || "N/A"
           };
         });
 
@@ -125,6 +127,7 @@ export default function ProfilePage() {
                 <InfoItem label="Age" value={person.age} />
                 <InfoItem label="Gender" value={person.gender} />
                 <InfoItem label="Race/Ethnicity" value={person.race} />
+                <InfoItem label="Category of Missing" value={person.category_of_missing} />
               </div>
             </div>
 
@@ -158,7 +161,6 @@ export default function ProfilePage() {
                 />
                 <InfoItem label="City" value={person.city} />
                 <InfoItem label="County" value={person.county} />
-                <InfoItem label="State" value={person.state} />
                 <InfoItem 
                   label="Last Updated" 
                   value={new Date(person.date_modified).toLocaleDateString()} 
