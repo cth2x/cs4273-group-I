@@ -4,8 +4,10 @@ import Link from "next/link";
 import TableComponent from "../TableComponent";
 import { fetchMissingPersons } from "../utils/fetch";
 import { MRT_ColumnDef } from "material-react-table";
-import { Button } from "@mui/material";
+import { Button, IconButton } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { EditIcon } from "lucide-react";
+import FormDrawer from "@/utils/FormDrawer";
 
 export type MissingPerson = {
   case_id: string;
@@ -46,7 +48,7 @@ export default function TablePage() {
           county,
           date_modified: today,
           classification: person.classification || "N/A",
-          category_of_missing: person.classification || "N/A"
+          category_of_missing: person.classification || "N/A",
         };
       });
 
@@ -55,8 +57,38 @@ export default function TablePage() {
 
     loadData();
   }, []);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [selectedPerson, setSelectedPerson] = useState<MissingPerson | null>(
+    null
+  );
+
+  // Open drawer here is causing some errors:
+  const openDrawer = (person: MissingPerson | null = null) => {
+    console.log("Opening Drawer with Person:", person); // Debugging log
+    setSelectedPerson(person);
+    setDrawerOpen(true);
+  };
 
   const columns: MRT_ColumnDef<MissingPerson>[] = [
+    // Make this only show up for admin
+    {
+      header: "Edit",
+      id: "actions",
+      enableSorting: false,
+      enableColumnFilter: false,
+      Cell: ({ row }) => (
+        <IconButton
+          className="edit-button"
+          onClick={(event) => {
+            event.stopPropagation(); // Prevent row click behavior (if re-added later)
+            console.log("Edit button clicked for:", row.original); // Debugging log
+            openDrawer(row.original);
+          }}
+        >
+          <EditIcon />
+        </IconButton>
+      ),
+    },
     { accessorKey: "case_id", header: "ID" },
     { accessorKey: "first_name", header: "First Name" },
     { accessorKey: "last_name", header: "Last Name" },
@@ -71,21 +103,21 @@ export default function TablePage() {
     },
     { accessorKey: "city", header: "City" },
     { accessorKey: "county", header: "County" },
-    
+
     {
       accessorKey: "tribe_statuses",
       header: "Tribal Statuses",
-      Cell: ({ row }) => row.original.tribe_statuses?.join(", ") || "N/A"
+      Cell: ({ row }) => row.original.tribe_statuses?.join(", ") || "N/A",
     },
     {
       accessorKey: "tribes",
       header: "Associated Tribes",
-      Cell: ({ row }) => row.original.tribes?.join(", ") || "N/A"
+      Cell: ({ row }) => row.original.tribes?.join(", ") || "N/A",
     },
     {
-      accessorKey: "classification", 
+      accessorKey: "classification",
       header: "Category of Missing",
-      Cell: ({ row }) => row.original.classification || "N/A"
+      Cell: ({ row }) => row.original.classification || "N/A",
     },
     { accessorKey: "date_modified", header: "Date modified" },
   ];
@@ -103,7 +135,8 @@ export default function TablePage() {
               minWidth: "100px",
               backgroundColor: "#1976D2",
               "&:hover": { backgroundColor: "#1565C0" },
-            }}>
+            }}
+          >
             Back
           </Button>
         </Link>
@@ -116,6 +149,12 @@ export default function TablePage() {
       <div className="pt-16">
         <TableComponent columns={columns} data={data} />
       </div>
+
+      <FormDrawer
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        initialData={selectedPerson || undefined}
+      ></FormDrawer>
     </div>
   );
 }

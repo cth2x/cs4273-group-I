@@ -13,16 +13,21 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Box,
 } from "@mui/material";
 import {
   MaterialReactTable,
   MRT_ColumnDef,
+  MRT_ShowHideColumnsButton,
+  MRT_ToggleFullScreenButton,
+  MRT_ToolbarInternalButtons,
   useMaterialReactTable,
 } from "material-react-table";
 import { useMemo, useState } from "react";
 import { MissingPerson } from "./table/page";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useRouter } from "next/navigation";
+import FormDrawer from "./utils/FormDrawer";
 
 type TableComponentProps = {
   columns: MRT_ColumnDef<MissingPerson>[];
@@ -69,12 +74,24 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
     id: "missing-persons-table",
     enableColumnOrdering: true,
     enableColumnPinning: true,
+    // enableRowActions: true,
+    enableColumnActions: false,
+    enableColumnDragging: false,
     data,
     defaultColumn: {
       minSize: 20,
       maxSize: 9001,
       size: 40,
     },
+    initialState: { columnPinning: { left: ["actions"] } },
+    renderTopToolbarCustomActions: ({ table }) => (
+      <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+        {/* Your custom button */}
+        <Button variant="contained" onClick={() => openDrawer()}>
+          Add Missing Person
+        </Button>
+      </Box>
+    ),
     muiTableBodyProps: {
       sx: {
         "& tr:nth-of-type(odd) > td": {
@@ -93,6 +110,11 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
     }),
   });
 
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const openDrawer = (person: MissingPerson | null = null) => {
+    setDrawerOpen(true);
+  };
+
   return (
     <>
       <div className="fixed top-4 right-4 z-50">
@@ -102,7 +124,8 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
           startIcon={<LogoutIcon />}
           onClick={handleLogoutClick}
           size="medium"
-          sx={{ minWidth: "100px" }}>
+          sx={{ minWidth: "100px" }}
+        >
           Logout
         </Button>
       </div>
@@ -111,23 +134,27 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
         open={openLogoutDialog}
         onClose={handleCloseDialog}
         aria-labelledby="logout-dialog-title"
-        aria-describedby="logout-dialog-description">
+        aria-describedby="logout-dialog-description"
+      >
         <DialogTitle
           id="logout-dialog-title"
-          sx={{ textAlign: "center", paddingBottom: 1 }}>
+          sx={{ textAlign: "center", paddingBottom: 1 }}
+        >
           Confirm Logout
         </DialogTitle>
         <DialogContent sx={{ paddingTop: 0, paddingBottom: 1 }}>
           <DialogContentText
             id="logout-dialog-description"
-            sx={{ textAlign: "center" }}>
+            sx={{ textAlign: "center" }}
+          >
             Are you sure you want to log out? You will still be able to view the
             table, but you won't be able to make any changes until you log in
             again.
           </DialogContentText>
         </DialogContent>
         <DialogActions
-          sx={{ justifyContent: "center", paddingTop: 0, paddingBottom: 2 }}>
+          sx={{ justifyContent: "center", paddingTop: 0, paddingBottom: 2 }}
+        >
           <Button onClick={handleCloseDialog} color="primary">
             Cancel
           </Button>
@@ -135,7 +162,8 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
             onClick={handleLogout}
             color="error"
             variant="contained"
-            disabled={isLoggingOut}>
+            disabled={isLoggingOut}
+          >
             {isLoggingOut ? "Logging out..." : "Logout"}
           </Button>
         </DialogActions>
@@ -144,6 +172,12 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
       <div className="shadow-md rounded-lg">
         <MaterialReactTable table={table} />
       </div>
+
+      <FormDrawer
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        initialData={undefined}
+      />
     </>
   );
 };
