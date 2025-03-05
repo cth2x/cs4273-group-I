@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   createTheme,
@@ -14,7 +14,7 @@ import {
   DialogContentText,
   DialogTitle,
   Box,
-} from "@mui/material";
+} from '@mui/material';
 import {
   MaterialReactTable,
   MRT_ColumnDef,
@@ -22,12 +22,12 @@ import {
   MRT_ToggleFullScreenButton,
   MRT_ToolbarInternalButtons,
   useMaterialReactTable,
-} from "material-react-table";
-import { useMemo, useState } from "react";
-import { MissingPerson } from "./table/page";
-import LogoutIcon from "@mui/icons-material/Logout";
-import { useRouter } from "next/navigation";
-import FormDrawer from "./utils/FormDrawer";
+} from 'material-react-table';
+import { useMemo, useState } from 'react';
+import { MissingPerson } from './table/page';
+import LogoutIcon from '@mui/icons-material/Logout';
+import { useRouter } from 'next/navigation';
+import FormDrawer from './utils/FormDrawer';
 
 type TableComponentProps = {
   columns: MRT_ColumnDef<MissingPerson>[];
@@ -50,8 +50,8 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
   const handleLogout = async () => {
     try {
       setIsLoggingOut(true);
-      const response = await fetch("/api/logout", {
-        method: "POST",
+      const response = await fetch('/api/logout', {
+        method: 'POST',
       });
 
       if (response.ok) {
@@ -59,7 +59,7 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
         setOpenLogoutDialog(false);
       }
     } catch (error) {
-      console.error("Logout failed:", error);
+      console.error('Logout failed:', error);
       setIsLoggingOut(false);
       setOpenLogoutDialog(false);
     }
@@ -71,7 +71,7 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
 
   const table = useMaterialReactTable({
     columns,
-    id: "missing-persons-table",
+    id: 'missing-persons-table',
     enableColumnOrdering: true,
     enableColumnPinning: true,
     // enableRowActions: true,
@@ -83,9 +83,9 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
       maxSize: 9001,
       size: 40,
     },
-    initialState: { columnPinning: { left: ["actions"] } },
+    initialState: { columnPinning: { left: ['actions'] } },
     renderTopToolbarCustomActions: ({ table }) => (
-      <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+      <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
         {/* Your custom button */}
         <Button variant="contained" onClick={() => openDrawer()}>
           Add Missing Person
@@ -94,17 +94,17 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
     ),
     muiTableBodyProps: {
       sx: {
-        "& tr:nth-of-type(odd) > td": {
-          backgroundColor: "#f5f5f5",
+        '& tr:nth-of-type(odd) > td': {
+          backgroundColor: '#f5f5f5',
         },
       },
     },
     muiTableBodyRowProps: ({ row }) => ({
       onClick: () => handleRowClick(row),
       sx: {
-        cursor: "pointer",
-        "&:hover": {
-          backgroundColor: "#f0f9ff",
+        cursor: 'pointer',
+        '&:hover': {
+          backgroundColor: '#f0f9ff',
         },
       },
     }),
@@ -124,8 +124,7 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
           startIcon={<LogoutIcon />}
           onClick={handleLogoutClick}
           size="medium"
-          sx={{ minWidth: "100px" }}
-        >
+          sx={{ minWidth: '100px' }}>
           Logout
         </Button>
       </div>
@@ -134,27 +133,23 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
         open={openLogoutDialog}
         onClose={handleCloseDialog}
         aria-labelledby="logout-dialog-title"
-        aria-describedby="logout-dialog-description"
-      >
+        aria-describedby="logout-dialog-description">
         <DialogTitle
           id="logout-dialog-title"
-          sx={{ textAlign: "center", paddingBottom: 1 }}
-        >
+          sx={{ textAlign: 'center', paddingBottom: 1 }}>
           Confirm Logout
         </DialogTitle>
         <DialogContent sx={{ paddingTop: 0, paddingBottom: 1 }}>
           <DialogContentText
             id="logout-dialog-description"
-            sx={{ textAlign: "center" }}
-          >
+            sx={{ textAlign: 'center' }}>
             Are you sure you want to log out? You will still be able to view the
             table, but you won't be able to make any changes until you log in
             again.
           </DialogContentText>
         </DialogContent>
         <DialogActions
-          sx={{ justifyContent: "center", paddingTop: 0, paddingBottom: 2 }}
-        >
+          sx={{ justifyContent: 'center', paddingTop: 0, paddingBottom: 2 }}>
           <Button onClick={handleCloseDialog} color="primary">
             Cancel
           </Button>
@@ -162,9 +157,8 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
             onClick={handleLogout}
             color="error"
             variant="contained"
-            disabled={isLoggingOut}
-          >
-            {isLoggingOut ? "Logging out..." : "Logout"}
+            disabled={isLoggingOut}>
+            {isLoggingOut ? 'Logging out...' : 'Logout'}
           </Button>
         </DialogActions>
       </Dialog>

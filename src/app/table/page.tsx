@@ -1,13 +1,13 @@
-"use client";
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import TableComponent from "../TableComponent";
-import { fetchMissingPersons } from "../utils/fetch";
-import { MRT_ColumnDef } from "material-react-table";
-import { Button, IconButton } from "@mui/material";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { EditIcon } from "lucide-react";
-import FormDrawer from "@/utils/FormDrawer";
+'use client';
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import TableComponent from '../TableComponent';
+import { fetchMissingPersons } from '../utils/fetch';
+import { MRT_ColumnDef } from 'material-react-table';
+import { Button, IconButton } from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { EditIcon } from 'lucide-react';
+import FormDrawer from '@/utils/FormDrawer';
 
 export type MissingPerson = {
   case_id: string;
@@ -35,20 +35,22 @@ export default function TablePage() {
 
       // Transform data: Split "name" into "first_name" and "last_name"
       const transformedData = result.map((person: any) => {
-        const [first_name, ...last_name] = person.name.split(" ");
+        const nameParts = person.name.split(' ');
+        const last_name = nameParts[0];
+        const first_name = nameParts.slice(1).join(' ');
         const [city, county, state] = person.missing_location
-          .split(",")
+          .split(',')
           .map((item: string) => item.trim());
-        const today = new Date().toISOString().split("T")[0];
+        const today = new Date().toISOString().split('T')[0];
         return {
           ...person,
           first_name,
-          last_name: last_name.join(" "),
+          last_name,
           city,
           county,
           date_modified: today,
-          classification: person.classification || "N/A",
-          category_of_missing: person.classification || "N/A",
+          classification: person.classification || 'N/A',
+          category_of_missing: person.classification || 'N/A',
         };
       });
 
@@ -64,7 +66,7 @@ export default function TablePage() {
 
   // Open drawer here is causing some errors:
   const openDrawer = (person: MissingPerson | null = null) => {
-    console.log("Opening Drawer with Person:", person); // Debugging log
+    console.log('Opening Drawer with Person:', person); // Debugging log
     setSelectedPerson(person);
     setDrawerOpen(true);
   };
@@ -72,8 +74,8 @@ export default function TablePage() {
   const columns: MRT_ColumnDef<MissingPerson>[] = [
     // Make this only show up for admin
     {
-      header: "Edit",
-      id: "actions",
+      header: 'Edit',
+      id: 'actions',
       enableSorting: false,
       enableColumnFilter: false,
       Cell: ({ row }) => (
@@ -81,45 +83,44 @@ export default function TablePage() {
           className="edit-button"
           onClick={(event) => {
             event.stopPropagation(); // Prevent row click behavior (if re-added later)
-            console.log("Edit button clicked for:", row.original); // Debugging log
+            console.log('Edit button clicked for:', row.original); // Debugging log
             openDrawer(row.original);
-          }}
-        >
+          }}>
           <EditIcon />
         </IconButton>
       ),
     },
-    { accessorKey: "case_id", header: "ID" },
-    { accessorKey: "first_name", header: "First Name" },
-    { accessorKey: "last_name", header: "Last Name" },
-    { accessorKey: "age", header: "Age" },
-    { accessorKey: "gender", header: "Sex" },
-    { accessorKey: "race", header: "Race / Ethnicity" },
+    { accessorKey: 'case_id', header: 'ID' },
+    { accessorKey: 'first_name', header: 'Last Name' },
+    { accessorKey: 'last_name', header: 'First Name' },
+    { accessorKey: 'age', header: 'Age' },
+    { accessorKey: 'gender', header: 'Sex' },
+    { accessorKey: 'race', header: 'Race / Ethnicity' },
     {
-      accessorKey: "missing_date",
-      header: "Date Missing",
+      accessorKey: 'missing_date',
+      header: 'Date Missing',
       Cell: ({ row }) =>
-        new Date(row.original.missing_date).toISOString().split("T")[0],
+        new Date(row.original.missing_date).toISOString().split('T')[0],
     },
-    { accessorKey: "city", header: "City" },
-    { accessorKey: "county", header: "County" },
+    { accessorKey: 'city', header: 'City' },
+    { accessorKey: 'county', header: 'County' },
 
     {
-      accessorKey: "tribe_statuses",
-      header: "Tribal Statuses",
-      Cell: ({ row }) => row.original.tribe_statuses?.join(", ") || "N/A",
+      accessorKey: 'tribe_statuses',
+      header: 'Tribal Statuses',
+      Cell: ({ row }) => row.original.tribe_statuses?.join(', ') || 'N/A',
     },
     {
-      accessorKey: "tribes",
-      header: "Associated Tribes",
-      Cell: ({ row }) => row.original.tribes?.join(", ") || "N/A",
+      accessorKey: 'tribes',
+      header: 'Associated Tribes',
+      Cell: ({ row }) => row.original.tribes?.join(', ') || 'N/A',
     },
     {
-      accessorKey: "classification",
-      header: "Category of Missing",
-      Cell: ({ row }) => row.original.classification || "N/A",
+      accessorKey: 'classification',
+      header: 'Category of Missing',
+      Cell: ({ row }) => row.original.classification || 'N/A',
     },
-    { accessorKey: "date_modified", header: "Date modified" },
+    { accessorKey: 'date_modified', header: 'Date modified' },
   ];
 
   return (
@@ -132,11 +133,10 @@ export default function TablePage() {
             startIcon={<ArrowBackIcon />}
             size="medium"
             sx={{
-              minWidth: "100px",
-              backgroundColor: "#1976D2",
-              "&:hover": { backgroundColor: "#1565C0" },
-            }}
-          >
+              minWidth: '100px',
+              backgroundColor: '#1976D2',
+              '&:hover': { backgroundColor: '#1565C0' },
+            }}>
             Back
           </Button>
         </Link>
@@ -153,8 +153,7 @@ export default function TablePage() {
       <FormDrawer
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
-        initialData={selectedPerson || undefined}
-      ></FormDrawer>
+        initialData={selectedPerson || undefined}></FormDrawer>
     </div>
   );
 }

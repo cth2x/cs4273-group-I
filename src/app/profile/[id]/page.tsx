@@ -1,9 +1,9 @@
-"use client";
-import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
-import Link from "next/link";
-import { MissingPerson } from "../../table/page";
-import { fetchMissingPersons } from "../../utils/fetch";
+'use client';
+import { useEffect, useState } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { MissingPerson } from '../../table/page';
+import { fetchMissingPersons } from '../../utils/fetch';
 
 export default function ProfilePage() {
   const params = useParams();
@@ -19,21 +19,23 @@ export default function ProfilePage() {
 
         // Transform data similar to table page
         const transformedData = allPersons.map((p: any) => {
-          const [first_name, ...last_name] = p.name.split(" ");
+          const nameParts = p.name.split(' ');
+          const last_name = nameParts[0];
+          const first_name = nameParts.slice(1).join(' ');
           const [city, county, state] = p.missing_location
-            .split(",")
+            .split(',')
             .map((item: string) => item.trim());
 
           return {
             ...p,
             first_name,
-            last_name: last_name.join(" "),
+            last_name,
             city,
             county,
             state,
-            date_modified: new Date().toISOString().split("T")[0],
-            classification: p.classification || "N/A",
-            category_of_missing: p.classification || "N/A"
+            date_modified: new Date().toISOString().split('T')[0],
+            classification: p.classification || 'N/A',
+            category_of_missing: p.classification || 'N/A',
           };
         });
 
@@ -45,10 +47,10 @@ export default function ProfilePage() {
         if (foundPerson) {
           setPerson(foundPerson);
         } else {
-          console.error("Person not found");
+          console.error('Person not found');
         }
       } catch (error) {
-        console.error("Error loading person data:", error);
+        console.error('Error loading person data:', error);
       } finally {
         setLoading(false);
       }
@@ -71,7 +73,9 @@ export default function ProfilePage() {
     return (
       <div className="min-h-screen p-8">
         <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-6">
-          <h1 className="text-2xl font-bold text-red-600 mb-4">Person Not Found</h1>
+          <h1 className="text-2xl font-bold text-red-600 mb-4">
+            Person Not Found
+          </h1>
           <p>The requested profile could not be found.</p>
           <Link href="/table">
             <button className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
@@ -127,7 +131,10 @@ export default function ProfilePage() {
                 <InfoItem label="Age" value={person.age} />
                 <InfoItem label="Gender" value={person.gender} />
                 <InfoItem label="Race/Ethnicity" value={person.race} />
-                <InfoItem label="Category of Missing" value={person.category_of_missing} />
+                <InfoItem
+                  label="Category of Missing"
+                  value={person.category_of_missing}
+                />
               </div>
             </div>
 
@@ -137,13 +144,13 @@ export default function ProfilePage() {
                 Tribal Information
               </h2>
               <div className="space-y-4">
-                <MultiInfoItem 
-                  label="Tribal Statuses" 
-                  values={person.tribe_statuses || []} 
+                <MultiInfoItem
+                  label="Tribal Statuses"
+                  values={person.tribe_statuses || []}
                 />
-                <MultiInfoItem 
-                  label="Associated Tribes" 
-                  values={person.tribes || []} 
+                <MultiInfoItem
+                  label="Associated Tribes"
+                  values={person.tribes || []}
                 />
               </div>
             </div>
@@ -155,15 +162,15 @@ export default function ProfilePage() {
               </h2>
 
               <div className="space-y-4">
-                <InfoItem 
-                  label="Missing Since" 
-                  value={new Date(person.missing_date).toLocaleDateString()} 
+                <InfoItem
+                  label="Missing Since"
+                  value={new Date(person.missing_date).toLocaleDateString()}
                 />
                 <InfoItem label="City" value={person.city} />
                 <InfoItem label="County" value={person.county} />
-                <InfoItem 
-                  label="Last Updated" 
-                  value={new Date(person.date_modified).toLocaleDateString()} 
+                <InfoItem
+                  label="Last Updated"
+                  value={new Date(person.date_modified).toLocaleDateString()}
                 />
               </div>
             </div>
@@ -177,8 +184,9 @@ export default function ProfilePage() {
 
             <div className="bg-gray-100 p-5 rounded-lg">
               <p className="text-gray-700 text-lg">
-                This information is maintained by the Missing Persons Database. If you have any information 
-                regarding this person, please contact your local authorities.
+                This information is maintained by the Missing Persons Database.
+                If you have any information regarding this person, please
+                contact your local authorities.
               </p>
             </div>
           </div>
@@ -192,8 +200,8 @@ export default function ProfilePage() {
 function InfoItem({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <span className="text-gray-600 font-medium">{label}:</span>{" "}
-      <span className="text-gray-900">{value || "N/A"}</span>
+      <span className="text-gray-600 font-medium">{label}:</span>{' '}
+      <span className="text-gray-900">{value || 'N/A'}</span>
     </div>
   );
 }
@@ -202,9 +210,9 @@ function InfoItem({ label, value }: { label: string; value: string }) {
 function MultiInfoItem({ label, values }: { label: string; values: string[] }) {
   return (
     <div>
-      <span className="text-gray-600 font-medium">{label}:</span>{" "}
+      <span className="text-gray-600 font-medium">{label}:</span>{' '}
       <span className="text-gray-900">
-        {values.length > 0 ? values.join(", ") : "N/A"}
+        {values.length > 0 ? values.join(', ') : 'N/A'}
       </span>
     </div>
   );
