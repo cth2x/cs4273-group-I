@@ -26,6 +26,7 @@ import {
 import { useMemo, useState } from 'react';
 import { MissingPerson } from './table/page';
 import LogoutIcon from '@mui/icons-material/Logout';
+import DownloadIcon from '@mui/icons-material/Download';
 import { useRouter } from 'next/navigation';
 import FormDrawer from './utils/FormDrawer';
 
@@ -86,9 +87,18 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
     initialState: { columnPinning: { left: ['actions'] } },
     renderTopToolbarCustomActions: ({ table }) => (
       <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-        {/* Your custom button */}
+        {/* Add Missing Person button */}
         <Button variant="contained" onClick={() => openDrawer()}>
           Add Missing Person
+        </Button>
+
+        {/* Export to CSV button */}
+        <Button
+          variant="outlined"
+          color="primary"
+          onClick={exportToCSV}
+          startIcon={<DownloadIcon />}>
+          Export CSV
         </Button>
       </Box>
     ),
@@ -109,6 +119,47 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
       },
     }),
   });
+
+  // Function to export table data to CSV
+  const exportToCSV = () => {
+    // Get visible columns
+    const visibleColumns = table.getVisibleLeafColumns().map((column) => {
+      return {
+        id: column.id,
+        header: column.columnDef.header?.toString() || column.id,
+      };
+    });
+
+    // Create CSV header row
+    const headerRow = visibleColumns
+      .map((column) => `"${column.header}"`)
+      .join(',');
+
+    // Create CSV data rows
+    const dataRows = data.map((row) => {
+      return visibleColumns
+        .map((column) => {
+          const cellValue = row[column.id as keyof MissingPerson];
+          // Handle different data types and escape quotes
+          return `"${cellValue?.toString().replace(/"/g, '""') || ''}"`;
+        })
+        .join(',');
+    });
+
+    // Combine header and data rows
+    const csvContent = [headerRow, ...dataRows].join('\n');
+
+    // Create a Blob and download link
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'missing_persons_data.csv');
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const openDrawer = (person: MissingPerson | null = null) => {
