@@ -1,45 +1,35 @@
-"use client";
-import Link from "next/link";
-import { useState } from "react";
-import { FormEvent } from "react";
-import { useRouter } from "next/navigation"
+'use client';
+import Link from 'next/link';
+import { useState } from 'react';
+import { FormEvent } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const router = useRouter();
-  
-  async function login(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
 
-    const formData = new FormData(event.currentTarget)
+  async function login(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    const formData = new FormData(event.currentTarget);
     const response = await fetch('/api/login', {
       method: 'POST',
-      body: formData
-    })
+      body: formData,
+    });
 
     if (response.ok) {
-      router.push('/admin')
-    } 
+      router.push('/admin');
+    }
   }
-
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-6 relative">
-      {/* Login Button */}
-      <div className="absolute top-4 right-4">
-        <button
-          onClick={() => setShowLoginModal(true)}
-          className="px-4 py-2 bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200 transition">
-          Login
-        </button>
-      </div>
-
       {/* Login Modal */}
       {showLoginModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-8 rounded-lg shadow-lg w-96">
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-xl font-semibold">Login</h3>
+              <h3 className="text-xl font-semibold">Admin Login</h3>
               <button
                 onClick={() => setShowLoginModal(false)}
                 className="text-gray-500 hover:text-gray-700">
@@ -53,7 +43,7 @@ export default function Home() {
                 </label>
                 <input
                   type="email"
-		  name="email"
+                  name="email"
                   className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
                 />
               </div>
@@ -63,14 +53,14 @@ export default function Home() {
                 </label>
                 <input
                   type="password"
-		  name="password"
+                  name="password"
                   className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
                 />
               </div>
               <button
                 type="submit"
-                className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
-                Sign In
+                className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold">
+                Admin Sign In
               </button>
             </form>
           </div>
@@ -85,11 +75,18 @@ export default function Home() {
         <p className="mt-4 ">
           A comprehensive resource to help view a missing person's status.
         </p>
-        <Link href="/table">
-          <button className="mt-6 px-6 py-3 bg-blue-600 text-white  rounded-lg text-lg hover:bg-blue-700 transition">
-            View Database
+        <div className="flex space-x-4 mt-6">
+          <Link href="/table">
+            <button className="px-6 py-3 bg-blue-600 text-white rounded-lg text-lg hover:bg-blue-700 transition shadow-md font-semibold">
+              View Database
+            </button>
+          </Link>
+          <button
+            onClick={() => setShowLoginModal(true)}
+            className="px-6 py-3 bg-black text-white rounded-lg text-lg hover:bg-gray-800 transition shadow-md font-semibold">
+            Admin Login
           </button>
-        </Link>
+        </div>
       </main>
 
       {/* Footer */}

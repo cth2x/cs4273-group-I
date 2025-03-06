@@ -23,12 +23,14 @@ import {
   MRT_ToolbarInternalButtons,
   useMaterialReactTable,
 } from 'material-react-table';
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { MissingPerson } from './table/page';
 import LogoutIcon from '@mui/icons-material/Logout';
+import LoginIcon from '@mui/icons-material/Login';
 import DownloadIcon from '@mui/icons-material/Download';
 import { useRouter } from 'next/navigation';
 import FormDrawer from './utils/FormDrawer';
+import { FormEvent } from 'react';
 
 type TableComponentProps = {
   columns: MRT_ColumnDef<MissingPerson>[];
@@ -39,14 +41,56 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
   const router = useRouter();
   const [openLogoutDialog, setOpenLogoutDialog] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+
+  useEffect(() => {
+    // Check authentication status when component mounts
+    const checkAuthStatus = async () => {
+      try {
+        const response = await fetch('/api/auth');
+        if (response.ok) {
+          const data = await response.json();
+          setIsAuthenticated(data.isAuthenticated);
+        }
+      } catch (error) {
+        console.error('Error checking authentication status:', error);
+      }
+    };
+
+    checkAuthStatus();
+  }, []);
 
   const handleLogoutClick = () => {
     setOpenLogoutDialog(true);
   };
 
+  const handleLoginClick = () => {
+    setShowLoginModal(true);
+  };
+
   const handleCloseDialog = () => {
     setOpenLogoutDialog(false);
   };
+
+  const handleCloseLoginModal = () => {
+    setShowLoginModal(false);
+  };
+
+  async function handleLogin(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    const formData = new FormData(event.currentTarget);
+    const response = await fetch('/api/login', {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (response.ok) {
+      setShowLoginModal(false);
+      setIsAuthenticated(true);
+    }
+  }
 
   const handleLogout = async () => {
     try {
@@ -58,6 +102,8 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
       if (response.ok) {
         setIsLoggingOut(false);
         setOpenLogoutDialog(false);
+        // Update authentication state instead of redirecting
+        setIsAuthenticated(false);
       }
     } catch (error) {
       console.error('Logout failed:', error);
@@ -169,16 +215,71 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
   return (
     <>
       <div className="fixed top-4 right-4 z-50">
-        <Button
-          variant="contained"
-          color="primary"
-          startIcon={<LogoutIcon />}
-          onClick={handleLogoutClick}
-          size="medium"
-          sx={{ minWidth: '100px' }}>
-          Logout
-        </Button>
+        {isAuthenticated ? (
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<LogoutIcon />}
+            onClick={handleLogoutClick}
+            size="medium"
+            sx={{ minWidth: '100px' }}>
+            Logout
+          </Button>
+        ) : (
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<LoginIcon />}
+            onClick={handleLoginClick}
+            size="medium"
+            sx={{ minWidth: '100px' }}>
+            Admin Login
+          </Button>
+        )}
       </div>
+
+      {/* Login Modal */}
+      {showLoginModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-8 rounded-lg shadow-lg w-96">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-xl font-semibold">Admin Login</h3>
+              <button
+                onClick={handleCloseLoginModal}
+                className="text-gray-500 hover:text-gray-700">
+                ✕
+              </button>
+            </div>
+            <form className="space-y-4" onSubmit={handleLogin}>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Password
+                </label>
+                <input
+                  type="password"
+                  name="password"
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+                />
+              </div>
+              <button
+                type="submit"
+                className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold">
+                Admin Sign In
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
 
       <Dialog
         open={openLogoutDialog}
