@@ -23,6 +23,10 @@ import {
   MRT_ToolbarInternalButtons,
   useMaterialReactTable,
 } from 'material-react-table';
+
+import { LocalizationProvider } from '@mui/x-date-pickers'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+
 import { useMemo, useState, useEffect } from 'react';
 import { MissingPerson } from './table/page';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -43,7 +47,8 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
-
+  const [session, setSession] = useState(null);
+  
   useEffect(() => {
     // Check authentication status when component mounts
     const checkAuthStatus = async () => {
@@ -58,7 +63,13 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
       }
     };
 
+    const getSession = async () => {
+      const res = await fetch('/api/session');
+      setSession(await res.json());
+    }
+
     checkAuthStatus();
+    getSession();
   }, []);
 
   const handleLogoutClick = () => {
@@ -89,6 +100,7 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
     if (response.ok) {
       setShowLoginModal(false);
       setIsAuthenticated(true);
+      window.location.reload();
     }
   }
 
@@ -104,6 +116,7 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
         setOpenLogoutDialog(false);
         // Update authentication state instead of redirecting
         setIsAuthenticated(false);
+	window.location.reload();
       }
     } catch (error) {
       console.error('Logout failed:', error);
@@ -134,9 +147,10 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
     renderTopToolbarCustomActions: ({ table }) => (
       <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
         {/* Add Missing Person button */}
-        <Button variant="contained" onClick={() => openDrawer()}>
+        {(session && session.role === 'admin') &&
+	  <Button variant="contained" onClick={() => openDrawer()}>
           Add Missing Person
-        </Button>
+         </Button>}
 
         {/* Export to CSV button */}
         <Button
@@ -146,7 +160,7 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
           startIcon={<DownloadIcon />}>
           Export CSV
         </Button>
-      </Box>
+    </Box>
     ),
     muiTableBodyProps: {
       sx: {
@@ -316,7 +330,9 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
       </Dialog>
 
       <div className="shadow-md rounded-lg">
-        <MaterialReactTable table={table} />
+  	<LocalizationProvider dateAdapter={AdapterDayjs}>
+          <MaterialReactTable table={table}/>
+	</LocalizationProvider>
       </div>
 
       <FormDrawer
