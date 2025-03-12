@@ -1,9 +1,9 @@
 import { getSession } from "@/lib/session";
 
+// Clear session data
 export async function POST() {
   const session = await getSession();
 
-  // Clear session data
   session.email = "";
   session.role = "";
 

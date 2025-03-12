@@ -1,3 +1,4 @@
+//Displays table with a persons data
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -9,6 +10,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { EditIcon } from 'lucide-react';
 import FormDrawer from '@/utils/FormDrawer';
 
+//Data layout for person
 export type MissingPerson = {
   case_id: string;
   first_name: string;

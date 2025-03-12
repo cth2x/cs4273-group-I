@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "@/lib/session";
 
+//Send user data to db
 export async function POST(req: Request) {
   const formData = await req.formData();
 

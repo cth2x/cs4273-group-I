@@ -1,4 +1,4 @@
-// src/utils/fetchMissingPersons.ts (or wherever you place your API functions)
+//Calls src/app/api/missing-persons/route.ts
 export const fetchMissingPersons = async () => {
     try {
       const response = await fetch("/api/missing-persons");
@@ -9,7 +9,8 @@ export const fetchMissingPersons = async () => {
       return [];
     }
   };
-
+  
+//Calls src/app/api/missing-persons/[id]/route.ts
   export const fetchMissingPersonById = async (id: string) => {
     try {
       const response = await fetch(`/api/missing-persons/${id}`);

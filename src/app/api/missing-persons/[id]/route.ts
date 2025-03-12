@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 import connection from '../../../lib/db';
 import { RowDataPacket } from 'mysql2';
 
+//Retrieve persons data from db
 export async function GET(
   request: Request,
   { params }: { params: { id: string } }
