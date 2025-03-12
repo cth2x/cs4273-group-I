@@ -63,6 +63,7 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
       }
     };
 
+    // Get session for admin check
     const getSession = async () => {
       const res = await fetch('/api/session');
       setSession(await res.json());
@@ -114,8 +115,8 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
       if (response.ok) {
         setIsLoggingOut(false);
         setOpenLogoutDialog(false);
-        // Update authentication state instead of redirecting
         setIsAuthenticated(false);
+	// Reload window to get appropriate effect on table
 	window.location.reload();
       }
     } catch (error) {
@@ -146,7 +147,7 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
     initialState: { columnPinning: { left: ['actions'] } },
     renderTopToolbarCustomActions: ({ table }) => (
       <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-        {/* Add Missing Person button */}
+        {/* Only load missing person button when logged in as admin */}
         {(session && session.role === 'admin') &&
 	  <Button variant="contained" onClick={() => openDrawer()}>
           Add Missing Person
