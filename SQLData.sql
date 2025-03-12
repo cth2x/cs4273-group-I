@@ -33,6 +33,8 @@ CREATE TABLE `dat` (
   `State` text,
   `Biological Sex` text,
   `Race / Ethnicity` text,
+  `Tribal Status` text,
+  `Associated Tribes` text,
   `Date Modified` text
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -64,6 +66,8 @@ CREATE TABLE `data` (
   `State` text,
   `Biological Sex` text,
   `Race / Ethnicity` text,
+  `Tribal Status` text,
+  `Associated Tribes` text,
   `Date Modified` text
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;

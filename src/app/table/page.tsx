@@ -18,10 +18,10 @@ export type MissingPerson = {
   age: string;
   gender: string;
   race: string;
-  missing_date: string;
+  missing_date: Date;
   city: string;
   county: string;
-  date_modified: string;
+  date_modified: Date;
   tribes: string[];
   tribe_statuses: string[];
   classification: string;
@@ -30,6 +30,7 @@ export type MissingPerson = {
 
 export default function TablePage() {
   const [data, setData] = useState([]);
+  const [session, setSession] = useState(null);
 
   useEffect(() => {
     async function loadData() {
@@ -56,10 +57,19 @@ export default function TablePage() {
         };
       });
 
+
       setData(transformedData);
     }
 
+    async function getSession() {
+      const res = await fetch('/api/session');
+      const data = await res.json();
+      setSession(data);
+      console.log("Session:", data);
+    }
+
     loadData();
+    getSession();
   }, []);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedPerson, setSelectedPerson] = useState<MissingPerson | null>(
@@ -73,7 +83,12 @@ export default function TablePage() {
     setDrawerOpen(true);
   };
 
-  const columns: MRT_ColumnDef<MissingPerson>[] = [
+
+
+  let columns: MRT_ColumnDef<MissingPerson>[];
+  
+  if (session && session.role === 'admin') {
+    columns = [
     // Make this only show up for admin
     {
       header: 'Edit',
@@ -95,14 +110,14 @@ export default function TablePage() {
     { accessorKey: 'case_id', header: 'ID' },
     { accessorKey: 'first_name', header: 'First Name' },
     { accessorKey: 'last_name', header: 'Last Name' },
-    { accessorKey: 'age', header: 'Age' },
+    { accessorKey: 'age', header: 'Age', filterVariant: 'range-slider'},
     { accessorKey: 'gender', header: 'Sex' },
     { accessorKey: 'race', header: 'Race / Ethnicity' },
     {
-      accessorKey: 'missing_date',
+      accessorFn: (originalRow) => new Date(originalRow.missing_date),
       header: 'Date Missing',
-      Cell: ({ row }) =>
-        new Date(row.original.missing_date).toISOString().split('T')[0],
+      Cell: ({ cell }) => cell.getValue<Date>().toLocaleDateString(),
+      filterVariant: 'date-range'
     },
     { accessorKey: 'city', header: 'City' },
     { accessorKey: 'county', header: 'County' },
@@ -116,15 +131,62 @@ export default function TablePage() {
       accessorKey: 'tribes',
       header: 'Associated Tribes',
       Cell: ({ row }) => row.original.tribes?.join(', ') || 'N/A',
+      filterVariant: 'select',
     },
     {
       accessorKey: 'classification',
       header: 'Category of Missing',
       Cell: ({ row }) => row.original.classification || 'N/A',
     },
-    { accessorKey: 'date_modified', header: 'Date modified' },
-  ];
-
+    {
+      accessorFn: (originalRow) => new Date(originalRow.date_modified),
+      header: 'Date modified',
+      filterVariant: 'date-range' ,
+      Cell: ({ cell }) => cell.getValue<Date>().toLocaleDateString()
+    }
+    ];
+  } else {
+    columns = [
+      { accessorKey: 'case_id', header: 'ID' },
+      { accessorKey: 'first_name', header: 'First Name' },
+      { accessorKey: 'last_name', header: 'Last Name' },
+      { accessorKey: 'age', header: 'Age', filterVariant: 'range-slider'},
+      { accessorKey: 'gender', header: 'Sex' },
+      { accessorKey: 'race', header: 'Race / Ethnicity' },
+      {
+	accessorFn: (originalRow) => new Date(originalRow.missing_date),
+	header: 'Date Missing',
+	Cell: ({ cell }) => cell.getValue<Date>().toLocaleDateString(),
+	filterVariant: 'date-range'
+      },
+      { accessorKey: 'city', header: 'City' },
+      { accessorKey: 'county', header: 'County' },
+      
+      {
+	accessorKey: 'tribe_statuses',
+	header: 'Tribal Statuses',
+	Cell: ({ row }) => row.original.tribe_statuses?.join(', ') || 'N/A',
+      },
+      {
+	accessorKey: 'tribes',
+	header: 'Associated Tribes',
+	Cell: ({ row }) => row.original.tribes?.join(', ') || 'N/A',
+	filterVariant: 'select',
+      },
+      {
+	accessorKey: 'classification',
+	header: 'Category of Missing',
+	Cell: ({ row }) => row.original.classification || 'N/A',
+      },
+      {
+	accessorFn: (originalRow) => new Date(originalRow.date_modified),
+	header: 'Date modified',
+	filterVariant: 'date-range' ,
+	Cell: ({ cell }) => cell.getValue<Date>().toLocaleDateString()
+      }
+    ];
+  }
+  
   return (
     <div className="p-6 h-full ">
       <div className="fixed top-4 left-4 z-50">
