@@ -58,7 +58,8 @@ Connor Corbin - SM4
   - [X] Show demo of frontend, decide if any feature is missing, and update demo as needed
 - [X] Setup backend database based on requirements
 - [X] Connect database to frontend, host site on docker
-- [ ] Incorporate Admin authentication and permissions
+- [X] Connect individual missing person page
+- [X] Incorporate Admin authentication and permissions
 - [ ] Improve UI
 - [ ] Develop add/remove a person from frontend
 - [ ] Check for any bugs, and show the product to the mentor to see if any changes need to be made
