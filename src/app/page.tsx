@@ -19,7 +19,7 @@ export default function Home() {
     });
 
     if (response.ok) {
-      router.push('/admin');
+      router.push('/table');
     }
   }
 
