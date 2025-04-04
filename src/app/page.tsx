@@ -1,13 +1,34 @@
 //Homepage Display
 'use client';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function Home() {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const router = useRouter();
+  const [stats, setStats] = useState<{ totalCases: number } | null>(null);
+
+  useEffect(() => {
+    async function fetchStats() {
+      try {
+        const response = await fetch('/api/stats');
+        if (response.ok) {
+          const data = await response.json();
+          setStats(data);
+        } else {
+          console.error('Failed to fetch stats');
+          setStats({ totalCases: 0 });
+        }
+      } catch (error) {
+        console.error('Error fetching stats:', error);
+        setStats({ totalCases: 0 });
+      }
+    }
+
+    fetchStats();
+  }, []);
 
   async function login(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -76,7 +97,21 @@ export default function Home() {
         <p className="mt-4 ">
           A comprehensive resource to help view a missing person's status.
         </p>
-        <div className="flex space-x-4 mt-6">
+
+        {/* General Stats */}
+        <div className="mt-6 p-4 bg-gray-100 rounded-lg shadow-sm">
+          {stats ? (
+            <p className="text-lg font-semibold text-gray-700">
+              Currently Tracking:{' '}
+              <span className="text-blue-600 text-xl">{stats.totalCases}</span>{' '}
+              Active Cases
+            </p>
+          ) : (
+            <p className="text-lg text-gray-500">Loading statistics...</p>
+          )}
+        </div>
+
+        <div className="flex space-x-4 mt-8">
           <Link href="/table">
             <button className="px-6 py-3 bg-blue-600 text-white rounded-lg text-lg hover:bg-blue-700 transition shadow-md font-semibold">
               View Database
