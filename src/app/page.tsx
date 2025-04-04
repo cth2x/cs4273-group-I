@@ -111,6 +111,52 @@ export default function Home() {
           )}
         </div>
 
+        {/* Stats Section */}
+        <div className="mt-10 w-full max-w-4xl bg-blue-600 text-white rounded-lg shadow-lg p-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+            {/* Missing Persons Column */}
+            <div>
+              <h3 className="text-xl font-semibold mb-4">Missing Persons</h3>
+              <div className="mb-4">
+                <p className="text-4xl font-bold">25,000+</p>
+                <p className="text-sm opacity-80">Open Cases</p>
+              </div>
+              <div>
+                <p className="text-4xl font-bold">56,000+</p>
+                <p className="text-sm opacity-80">Resolved Cases</p>
+              </div>
+            </div>
+
+            {/* Unidentified Persons Column */}
+            <div>
+              <h3 className="text-xl font-semibold mb-4">
+                Unidentified Persons
+              </h3>
+              <div className="mb-4">
+                <p className="text-4xl font-bold">15,000+</p>
+                <p className="text-sm opacity-80">Open Cases</p>
+              </div>
+              <div>
+                <p className="text-4xl font-bold">8,000+</p>
+                <p className="text-sm opacity-80">Resolved Cases</p>
+              </div>
+            </div>
+
+            {/* Unclaimed Persons Column */}
+            <div>
+              <h3 className="text-xl font-semibold mb-4">Unclaimed Persons</h3>
+              <div className="mb-4">
+                <p className="text-4xl font-bold">19,000+</p>
+                <p className="text-sm opacity-80">Open Cases</p>
+              </div>
+              <div>
+                <p className="text-4xl font-bold">6,000+</p>
+                <p className="text-sm opacity-80">Resolved Cases</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-6 mt-10">
           <Link href="/table">
             <button className="px-8 py-3 bg-blue-600 text-white rounded-lg text-lg hover:bg-blue-700 transition shadow-md font-semibold w-full sm:w-auto">
