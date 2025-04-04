@@ -45,7 +45,7 @@ export default function Home() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-6 relative">
+    <div className="flex flex-col items-center justify-center min-h-screen p-6 relative bg-gradient-to-br from-gray-50 to-blue-100">
       {/* Login Modal */}
       {showLoginModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -90,18 +90,18 @@ export default function Home() {
       )}
 
       {/* Hero Section */}
-      <main className="flex flex-col items-center text-center mt-16">
-        <h2 className="text-3xl font-bold">
+      <main className="flex flex-col items-center text-center py-16 px-6 max-w-3xl mx-auto">
+        <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
           Welcome to the Missing Persons Database
         </h2>
-        <p className="mt-4 ">
+        <p className="mt-2 text-lg md:text-xl text-gray-600 mb-8">
           A comprehensive resource to help view a missing person's status.
         </p>
 
         {/* General Stats */}
-        <div className="mt-6 p-4 bg-gray-100 rounded-lg shadow-sm">
+        <div className="mt-6 p-6 bg-white rounded-lg shadow-md border border-gray-200 min-w-[300px]">
           {stats ? (
-            <p className="text-lg font-semibold text-gray-700">
+            <p className="text-xl font-semibold text-gray-700">
               Currently Tracking:{' '}
               <span className="text-blue-600 text-xl">{stats.totalCases}</span>{' '}
               Active Cases
@@ -111,22 +111,22 @@ export default function Home() {
           )}
         </div>
 
-        <div className="flex space-x-4 mt-8">
+        <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-6 mt-10">
           <Link href="/table">
-            <button className="px-6 py-3 bg-blue-600 text-white rounded-lg text-lg hover:bg-blue-700 transition shadow-md font-semibold">
+            <button className="px-8 py-3 bg-blue-600 text-white rounded-lg text-lg hover:bg-blue-700 transition shadow-md font-semibold w-full sm:w-auto">
               View Database
             </button>
           </Link>
           <button
             onClick={() => setShowLoginModal(true)}
-            className="px-6 py-3 bg-black text-white rounded-lg text-lg hover:bg-gray-800 transition shadow-md font-semibold">
+            className="px-8 py-3 bg-gray-800 text-white rounded-lg text-lg hover:bg-gray-900 transition shadow-md font-semibold w-full sm:w-auto">
             Admin Login
           </button>
         </div>
       </main>
 
       {/* Footer */}
-      <footer className="absolute bottom-4 pb-8">
+      <footer className="absolute bottom-6 text-gray-500">
         Missing Persons Database
       </footer>
     </div>
