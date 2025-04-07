@@ -240,7 +240,7 @@ export default function TablePage() {
       { accessorKey: 'case_id', header: 'ID' },
       { accessorKey: 'first_name', header: 'First Name' },
       { accessorKey: 'last_name', header: 'Last Name' },
-      { accessorKey: 'age', header: 'Age', filterVariant: 'range-slider' },
+      { accessorFn: (originalRow) => parseInt(originalRow.age), header: 'Age', filterVariant: 'range' },
       { accessorKey: 'gender', header: 'Sex' },
       { accessorKey: 'race', header: 'Race / Ethnicity' },
       {

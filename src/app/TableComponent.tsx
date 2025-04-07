@@ -37,7 +37,7 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
       maxSize: 9001,
       size: 40,
     },
-    initialState: { columnPinning: { left: ['actions'] } },
+      initialState: { columnPinning: { left: ['actions'] }, showColumnFilters: true },
     muiTableBodyProps: {
       sx: {
         '& tr:nth-of-type(odd) > td': {
