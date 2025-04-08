@@ -2,6 +2,7 @@
 'use client';
 import { useState, useEffect, FormEvent } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import TableComponent from '../TableComponent';
 import { fetchMissingPersons } from '../utils/fetch';
 import { MRT_ColumnDef } from 'material-react-table';
@@ -55,11 +56,11 @@ type SessionData = {
 
 export default function TablePage() {
   const [data, setData] = useState<MissingPerson[]>([]);
+  const [filteredData, setFilteredData] = useState<MissingPerson[]>([]);
   const [session, setSession] = useState<SessionData>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [selectedPerson, setSelectedPerson] = useState<MissingPerson | null>(
-    null
-  );
+  const [selectedPerson, setSelectedPerson] = useState<MissingPerson | null>(null);
+  const searchParams = useSearchParams();
 
   // Authentication and Modal/Dialog State from TableComponent
   const [openLogoutDialog, setOpenLogoutDialog] = useState(false);
@@ -89,7 +90,11 @@ export default function TablePage() {
           category_of_missing: person.classification || 'N/A',
         };
       });
+      
       setData(transformedData);
+      
+      // Apply initial filtering based on URL search params
+      applyFilters(transformedData);
     }
 
     async function getSessionAndAuth() {
@@ -118,6 +123,129 @@ export default function TablePage() {
     loadData();
     getSessionAndAuth();
   }, []);
+
+  // Function to filter data based on search params
+  const applyFilters = (dataToFilter: MissingPerson[]) => {
+    if (!searchParams || searchParams.size === 0) {
+      setFilteredData(dataToFilter); // No filters, use all data
+      return;
+    }
+    
+    // Filter the data based on search parameters
+    let filtered = [...dataToFilter];
+    
+    // Apply each filter
+    if (searchParams.has('first_name')) {
+      const firstName = searchParams.get('first_name')?.toLowerCase();
+      if (firstName) {
+        filtered = filtered.filter(person => 
+          person.first_name.toLowerCase().includes(firstName)
+        );
+      }
+    }
+    
+    if (searchParams.has('last_name')) {
+      const lastName = searchParams.get('last_name')?.toLowerCase();
+      if (lastName) {
+        filtered = filtered.filter(person => 
+          person.last_name.toLowerCase().includes(lastName)
+        );
+      }
+    }
+    
+    if (searchParams.has('age')) {
+      const age = searchParams.get('age');
+      if (age) {
+        filtered = filtered.filter(person => 
+          person.age === age
+        );
+      }
+    }
+    
+    if (searchParams.has('gender')) {
+      const gender = searchParams.get('gender');
+      if (gender) {
+        filtered = filtered.filter(person => 
+          person.gender.toLowerCase() === gender.toLowerCase()
+        );
+      }
+    }
+    
+    if (searchParams.has('race')) {
+      const race = searchParams.get('race')?.toLowerCase();
+      if (race) {
+        filtered = filtered.filter(person => 
+          person.race.toLowerCase().includes(race)
+        );
+      }
+    }
+    
+    if (searchParams.has('city')) {
+      const city = searchParams.get('city')?.toLowerCase();
+      if (city) {
+        filtered = filtered.filter(person => 
+          person.city && person.city.toLowerCase().includes(city)
+        );
+      }
+    }
+    
+    if (searchParams.has('county')) {
+      const county = searchParams.get('county')?.toLowerCase();
+      if (county) {
+        filtered = filtered.filter(person => 
+          person.county && person.county.toLowerCase().includes(county)
+        );
+      }
+    }
+    
+    // Date range filtering
+    if (searchParams.has('missing_date_from') || searchParams.has('missing_date_to')) {
+      const fromDate = searchParams.get('missing_date_from');
+      const toDate = searchParams.get('missing_date_to');
+      
+      filtered = filtered.filter(person => {
+        const personDate = new Date(person.missing_date);
+        
+        if (fromDate && toDate) {
+          return personDate >= new Date(fromDate) && personDate <= new Date(toDate);
+        } else if (fromDate) {
+          return personDate >= new Date(fromDate);
+        } else if (toDate) {
+          return personDate <= new Date(toDate);
+        }
+        
+        return true;
+      });
+    }
+    
+    if (searchParams.has('classification')) {
+      const classification = searchParams.get('classification')?.toLowerCase();
+      if (classification) {
+        filtered = filtered.filter(person => 
+          person.classification.toLowerCase().includes(classification)
+        );
+      }
+    }
+    
+    if (searchParams.has('tribe')) {
+      const tribe = searchParams.get('tribe')?.toLowerCase();
+      if (tribe) {
+        filtered = filtered.filter(person => 
+          person.tribes && 
+          person.tribes.some(t => t.toLowerCase().includes(tribe))
+        );
+      }
+    }
+    
+    setFilteredData(filtered);
+  };
+  
+  // Update effect to run when search params change
+  useEffect(() => {
+    if (data.length > 0) {
+      applyFilters(data);
+    }
+  }, [searchParams, data]);
 
   // Handlers from TableComponent
   const handleLogoutClick = () => {
@@ -177,19 +305,19 @@ export default function TablePage() {
   };
 
   const handleDelete = async (case_id: string) => {
-  const confirmation = window.confirm("Are you sure you want to delete this person?");
-  if (confirmation) {
-    try {
-      const response = await fetch('/api/deletePerson', {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ case_id }),
-      });
-    } catch (error) {
-      console.error('Error deleting person:', error);
+    const confirmation = window.confirm("Are you sure you want to delete this person?");
+    if (confirmation) {
+      try {
+        const response = await fetch('/api/deletePerson', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ case_id }),
+        });
+      } catch (error) {
+        console.error('Error deleting person:', error);
+      }
     }
-  }
-};
+  };
 
 
   let columns: MRT_ColumnDef<MissingPerson>[] = [];
@@ -228,7 +356,6 @@ export default function TablePage() {
       },
       { accessorKey: 'city', header: 'City' },
       { accessorKey: 'county', header: 'County' },
-
       {
         accessorKey: 'tribe_statuses',
         header: 'Tribal Statuses',
@@ -261,7 +388,7 @@ export default function TablePage() {
             className="delete-button"
             onClick={(event) => {
               event.stopPropagation();
-              handleDelete(row.original.case_id); // Call the function to delete the person
+              handleDelete(row.original.case_id);
             }}
           >
             <DeleteIcon />
@@ -285,7 +412,6 @@ export default function TablePage() {
       },
       { accessorKey: 'city', header: 'City' },
       { accessorKey: 'county', header: 'County' },
-
       {
         accessorKey: 'tribe_statuses',
         header: 'Tribal Statuses',
@@ -378,8 +504,24 @@ export default function TablePage() {
         </Box>
       </div>
 
+      {/* If we have filters applied, show a message */}
+      {searchParams && searchParams.size > 0 && (
+        <div className="my-4 p-4 bg-blue-50 rounded-lg">
+          <div className="flex justify-between items-center">
+            <p className="text-blue-800">
+              Showing filtered results based on your search criteria.
+            </p>
+            <Link href="/table">
+              <button className="px-4 py-1 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700">
+                Clear Filters
+              </button>
+            </Link>
+          </div>
+        </div>
+      )}
+
       <div>
-        <TableComponent columns={columns} data={data} />
+        <TableComponent columns={columns} data={filteredData.length > 0 ? filteredData : data} />
       </div>
 
       {showLoginModal && (
