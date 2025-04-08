@@ -1,5 +1,4 @@
-//Add/Edit persons data from frontend
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Drawer,
   Button,
@@ -9,19 +8,13 @@ import {
   Typography,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { MissingPerson } from "@/table/page";
 
 interface FormDrawerProps {
   open: boolean;
   onClose: () => void;
-  initialData?: MissingPerson;
 }
 
-const FormDrawer: React.FC<FormDrawerProps> = ({
-  open,
-  onClose,
-  initialData = {} as MissingPerson,
-}) => {
+const FormDrawer: React.FC<FormDrawerProps> = ({ open, onClose }) => {
   const [formData, setFormData] = useState({
     case_id: "",
     first_name: "",
@@ -29,30 +22,48 @@ const FormDrawer: React.FC<FormDrawerProps> = ({
     age: "",
     gender: "",
     race: "",
+    height: "",
+    weight: "",
     missing_date: "",
-    city: "",
-    county: "",
-    // state: "",
-    date_modified: "",
-    // tribe_status: "",
-    // tribe_name: "",
+    missing_location: "",
+    circumstances: "",
+    contact_info: "",
+    eye_color: "",
+    hair_color: "",
     classification: "",
+    date_modified: "",
   });
-
-  useEffect(() => {
-    if (JSON.stringify(formData) !== JSON.stringify(initialData)) {
-      setFormData(initialData);
-    }
-  }, [initialData]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Submitted Data:", formData);
-    onClose();
+
+    try {
+      const response = await fetch('/api/addPerson', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        const text = await response.text(); // fallback for HTML error pages
+        throw new Error(`Server error: ${text}`);
+      }
+
+      const result = await response.json();
+      console.log('Server response:', result);
+
+      if (result.success) {
+        // maybe show a success message or refresh table
+      }
+
+      onClose();
+    } catch (err) {
+      console.error('Error submitting form:', err);
+    }
   };
 
   return (
@@ -76,7 +87,7 @@ const FormDrawer: React.FC<FormDrawerProps> = ({
           fontWeight={"bold"}
           className="text-center"
         >
-          {initialData.first_name ? "Edit Person" : "Add Person"}
+          Add Person
         </Typography>
         <IconButton onClick={onClose}>
           <CloseIcon />
@@ -94,6 +105,14 @@ const FormDrawer: React.FC<FormDrawerProps> = ({
           p: 1,
         }}
       >
+        <TextField
+          label="Case ID"
+          name="case_id"
+          variant="outlined"
+          fullWidth
+          value={formData.case_id}
+          onChange={handleChange}
+        />
         <TextField
           label="First Name"
           name="first_name"
@@ -135,6 +154,22 @@ const FormDrawer: React.FC<FormDrawerProps> = ({
           onChange={handleChange}
         />
         <TextField
+          label="Height"
+          name="height"
+          variant="outlined"
+          fullWidth
+          value={formData.height}
+          onChange={handleChange}
+        />
+        <TextField
+          label="Weight"
+          name="weight"
+          variant="outlined"
+          fullWidth
+          value={formData.weight}
+          onChange={handleChange}
+        />
+        <TextField
           label="Missing Date"
           name="missing_date"
           variant="outlined"
@@ -143,29 +178,45 @@ const FormDrawer: React.FC<FormDrawerProps> = ({
           onChange={handleChange}
         />
         <TextField
-          label="City"
-          name="city"
+          label="Missing Location"
+          name="missing_location"
           variant="outlined"
           fullWidth
-          value={formData.city}
+          value={formData.missing_location}
           onChange={handleChange}
         />
         <TextField
-          label="County"
-          name="county"
+          label="Circumstances"
+          name="circumstances"
           variant="outlined"
           fullWidth
-          value={formData.county}
+          value={formData.circumstances}
           onChange={handleChange}
         />
-        {/* <TextField
-          label="State"
-          name="state"
+        <TextField
+          label="Contact Info"
+          name="contact_info"
           variant="outlined"
           fullWidth
-          value={formData.state}
+          value={formData.contact_info}
           onChange={handleChange}
-        /> */}
+        />
+        <TextField
+          label="Eye Color"
+          name="eye_color"
+          variant="outlined"
+          fullWidth
+          value={formData.eye_color}
+          onChange={handleChange}
+        />
+        <TextField
+          label="Hair Color"
+          name="hair_color"
+          variant="outlined"
+          fullWidth
+          value={formData.hair_color}
+          onChange={handleChange}
+        />
         <TextField
           label="Date Modified"
           name="date_modified"
@@ -174,22 +225,6 @@ const FormDrawer: React.FC<FormDrawerProps> = ({
           value={formData.date_modified}
           onChange={handleChange}
         />
-        {/* <TextField
-          label="Tribe Status"
-          name="tribe_status"
-          variant="outlined"
-          fullWidth
-          value={formData.tribe_status}
-          onChange={handleChange}
-        />
-        <TextField
-          label="Tribe Name"
-          name="tribe_name"
-          variant="outlined"
-          fullWidth
-          value={formData.tribe_name}
-          onChange={handleChange}
-        /> */}
         <TextField
           label="Classification"
           name="classification"

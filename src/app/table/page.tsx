@@ -22,6 +22,7 @@ import AddIcon from '@mui/icons-material/Add';
 import DownloadIcon from '@mui/icons-material/Download';
 import { EditIcon } from 'lucide-react';
 import FormDrawer from '@/utils/FormDrawer';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 //Data layout for person
 export type MissingPerson = {
@@ -175,6 +176,22 @@ export default function TablePage() {
     setDrawerOpen(true);
   };
 
+  const handleDelete = async (case_id: string) => {
+  const confirmation = window.confirm("Are you sure you want to delete this person?");
+  if (confirmation) {
+    try {
+      const response = await fetch('/api/deletePerson', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ case_id }),
+      });
+    } catch (error) {
+      console.error('Error deleting person:', error);
+    }
+  }
+};
+
+
   let columns: MRT_ColumnDef<MissingPerson>[] = [];
 
   if (session && session.role === 'admin') {
@@ -233,6 +250,23 @@ export default function TablePage() {
         header: 'Date modified',
         filterVariant: 'date-range',
         Cell: ({ cell }) => cell.getValue<Date>().toLocaleDateString(),
+      },
+      {
+        header: 'Delete',
+        id: 'delete',
+        enableSorting: false,
+        enableColumnFilter: false,
+        Cell: ({ row }) => (
+          <IconButton
+            className="delete-button"
+            onClick={(event) => {
+              event.stopPropagation();
+              handleDelete(row.original.case_id); // Call the function to delete the person
+            }}
+          >
+            <DeleteIcon />
+          </IconButton>
+        ),
       },
     ];
   } else {
