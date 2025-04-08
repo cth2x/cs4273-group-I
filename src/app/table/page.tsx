@@ -20,7 +20,7 @@ import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
 import AddIcon from '@mui/icons-material/Add';
 import DownloadIcon from '@mui/icons-material/Download';
-import { EditIcon } from 'lucide-react';
+import { EditIcon, ListIcon } from 'lucide-react';
 import FormDrawer from '@/utils/FormDrawer';
 import DeleteIcon from '@mui/icons-material/Delete';
 
@@ -335,6 +335,16 @@ export default function TablePage() {
 
         <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
           {session && session.role === 'admin' && (
+          <>
+            <Link href="/admin">
+              <Button
+                variant="contained"
+                startIcon={<ListIcon />}
+                size="medium"
+              >
+                View Requests
+              </Button>
+            </Link>
             <Button
               variant="contained"
               onClick={() => openDrawer()}
@@ -342,6 +352,7 @@ export default function TablePage() {
               size="medium">
               Add Person
             </Button>
+          </>
           )}
           {isAuthenticated ? (
             <Button
