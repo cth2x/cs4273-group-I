@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Drawer,
   Button,
@@ -8,63 +8,100 @@ import {
   Typography,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import { fetchMissingPersonById } from "./fetch";
 
+interface MissingPerson {
+  case_id: string;
+  first_name: string;
+  last_name: string;
+  age: string;
+  gender: string;
+  race: string;
+  height: string;
+  weight: string;
+  missing_date: string;
+  missing_location: string;
+  circumstances: string;
+  contact_info: string;
+  eye_color: string;
+  hair_color: string;
+  classification: string;
+  date_modified: string;
+}
 interface FormDrawerProps {
   open: boolean;
   onClose: () => void;
+  initialData?: MissingPerson | null;
 }
 
-const FormDrawer: React.FC<FormDrawerProps> = ({ open, onClose }) => {
-  const [formData, setFormData] = useState({
-    case_id: "",
-    first_name: "",
-    last_name: "",
-    age: "",
-    gender: "",
-    race: "",
-    height: "",
-    weight: "",
-    missing_date: "",
-    missing_location: "",
-    circumstances: "",
-    contact_info: "",
-    eye_color: "",
-    hair_color: "",
-    classification: "",
-    date_modified: "",
-  });
+const defaultFormData: MissingPerson = {
+  case_id: "",
+  first_name: "",
+  last_name: "",
+  age: "",
+  gender: "",
+  race: "",
+  height: "",
+  weight: "",
+  missing_date: "",
+  missing_location: "",
+  circumstances: "",
+  contact_info: "",
+  eye_color: "",
+  hair_color: "",
+  classification: "",
+  date_modified: "",
+};
 
+const FormDrawer: React.FC<FormDrawerProps> = ({ open, onClose, initialData }) => {
+  const [formData, setFormData] = useState<MissingPerson>(defaultFormData);
+
+
+  useEffect(() => {
+    if (initialData) {
+      setFormData(initialData);
+    } 
+    else {
+      console.log("help");
+    }
+  }, [initialData, open]);
+  
+  
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+  
     try {
-      const response = await fetch('/api/addPerson', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      // If person exists, delete them
+      const existingPerson = await fetchMissingPersonById(formData.case_id);
+      if (existingPerson) {
+        const deleteResponse = await fetch('/api/deletePerson', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ case_id: formData.case_id }), // send only what's needed
+        });
+    
+        if (!deleteResponse.ok) {
+          throw new Error("Error deleting existing person");
+        }
+      }
+  
+      // Add new person
+      const addPerson = await fetch("/api/addPerson", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
-
-      if (!response.ok) {
-        const text = await response.text(); // fallback for HTML error pages
-        throw new Error(`Server error: ${text}`);
-      }
-
-      const result = await response.json();
-      console.log('Server response:', result);
-
-      if (result.success) {
-        // maybe show a success message or refresh table
-      }
-
+  
       onClose();
     } catch (err) {
-      console.error('Error submitting form:', err);
+      console.error("Error in form submission:", err);
     }
   };
+  
 
   return (
     <Drawer

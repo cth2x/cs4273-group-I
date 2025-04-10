@@ -4,7 +4,7 @@ import { useState, useEffect, FormEvent } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import TableComponent from '../TableComponent';
-import { fetchMissingPersons } from '../utils/fetch';
+import { fetchMissingPersonById, fetchMissingPersons } from '../utils/fetch';
 import { MRT_ColumnDef } from 'material-react-table';
 import {
   Button,
@@ -25,7 +25,6 @@ import { EditIcon, ListIcon } from 'lucide-react';
 import FormDrawer from '@/utils/FormDrawer';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-//Data layout for person
 export type MissingPerson = {
   case_id: string;
   first_name: string;
@@ -33,10 +32,15 @@ export type MissingPerson = {
   age: string;
   gender: string;
   race: string;
-  missing_date: Date;
-  city: string;
-  county: string;
-  date_modified: Date;
+  height: string;
+  weight: string;
+  eye_color: string;
+  hair_color: string;
+  missing_date: string;
+  missing_location: string;
+  circumstances: string;
+  contact_info: string;
+  date_modified: string;
   tribes: string[];
   tribe_statuses: string[];
   classification: string;
@@ -75,16 +79,11 @@ export default function TablePage() {
         const nameParts = person.name.split(' ');
         const last_name = nameParts[0];
         const first_name = nameParts.slice(1).join(' ');
-        const [city, county, state] = person.missing_location
-          .split(',')
-          .map((item: string) => item.trim());
         const today = new Date().toISOString().split('T')[0];
         return {
           ...person,
           first_name,
           last_name,
-          city,
-          county,
           date_modified: today,
           classification: person.classification || 'N/A',
           category_of_missing: person.classification || 'N/A',
@@ -180,24 +179,16 @@ export default function TablePage() {
       }
     }
     
-    if (searchParams.has('city')) {
-      const city = searchParams.get('city')?.toLowerCase();
-      if (city) {
+    
+    if (searchParams.has('missing_location')) {
+      const missing_location = searchParams.get('missing_location')?.toLowerCase();
+      if (missing_location) {
         filtered = filtered.filter(person => 
-          person.city && person.city.toLowerCase().includes(city)
+          person.missing_location && person.missing_location.toLowerCase().includes(missing_location)
         );
       }
     }
-    
-    if (searchParams.has('county')) {
-      const county = searchParams.get('county')?.toLowerCase();
-      if (county) {
-        filtered = filtered.filter(person => 
-          person.county && person.county.toLowerCase().includes(county)
-        );
-      }
-    }
-    
+
     // Date range filtering
     if (searchParams.has('missing_date_from') || searchParams.has('missing_date_to')) {
       const fromDate = searchParams.get('missing_date_from');
@@ -319,6 +310,26 @@ export default function TablePage() {
     }
   };
 
+  const handleEdit = async (case_id: string) => {
+    setDrawerOpen(true);
+    try {
+      const data = await fetchMissingPersonById(case_id);
+      console.log(data.name);
+  
+      // Split the name and swap the assignment
+      const [last_name, first_name] = data.name.split(" ");
+  
+      // Set the selected person with the swapped name
+      setSelectedPerson({
+        ...data,
+        first_name,
+        last_name,
+      });
+    } catch (err) {
+      console.error('Failed to fetch full person data', err);
+    }
+  };
+  
 
   let columns: MRT_ColumnDef<MissingPerson>[] = [];
 
@@ -334,9 +345,9 @@ export default function TablePage() {
             className="edit-button"
             onClick={(event) => {
               event.stopPropagation();
-              console.log('Edit button clicked for:', row.original);
-              openDrawer(row.original);
-            }}>
+              handleEdit(row.original.case_id);
+            }}
+          >
             <EditIcon />
           </IconButton>
         ),
@@ -354,8 +365,7 @@ export default function TablePage() {
         Cell: ({ cell }) => cell.getValue<Date>().toLocaleDateString(),
         filterVariant: 'date-range',
       },
-      { accessorKey: 'city', header: 'City' },
-      { accessorKey: 'county', header: 'County' },
+      { accessorKey: 'missing_location', header: 'Missing Location' },
       {
         accessorKey: 'tribe_statuses',
         header: 'Tribal Statuses',
@@ -410,8 +420,7 @@ export default function TablePage() {
         Cell: ({ cell }) => cell.getValue<Date>().toLocaleDateString(),
         filterVariant: 'date-range',
       },
-      { accessorKey: 'city', header: 'City' },
-      { accessorKey: 'county', header: 'County' },
+      { accessorKey: 'missing_location', header: 'Missing Location' },
       {
         accessorKey: 'tribe_statuses',
         header: 'Tribal Statuses',

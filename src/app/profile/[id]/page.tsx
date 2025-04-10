@@ -167,8 +167,7 @@ export default function ProfilePage() {
                   label="Missing Since"
                   value={new Date(person.missing_date).toLocaleDateString()}
                 />
-                <InfoItem label="City" value={person.city} />
-                <InfoItem label="County" value={person.county} />
+                <InfoItem label="Missing Location" value={person.missing_location} />
                 <InfoItem
                   label="Last Updated"
                   value={new Date(person.date_modified).toLocaleDateString()}

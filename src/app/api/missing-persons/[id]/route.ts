@@ -8,7 +8,8 @@ export async function GET(
   request: Request,
   { params }: { params: { id: string } }
 ) {
-  const id = params.id;
+  params = await params;
+  const id = await params.id;
 
   return new Promise((resolve) => {
     connection.query(
