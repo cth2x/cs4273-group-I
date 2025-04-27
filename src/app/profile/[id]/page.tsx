@@ -1,10 +1,10 @@
 //Displays persons profile page and data
-'use client';
-import { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { MissingPerson } from '../../table/page';
-import { fetchMissingPersons } from '../../utils/fetch';
+"use client";
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import Link from "next/link";
+import { MissingPerson } from "../../table/page";
+import { fetchMissingPersons } from "../../utils/fetch";
 
 export default function ProfilePage() {
   const params = useParams();
@@ -20,11 +20,11 @@ export default function ProfilePage() {
 
         // Transform data similar to table page
         const transformedData = allPersons.map((p: any) => {
-          const nameParts = p.name.split(' ');
+          const nameParts = p.name.split(" ");
           const last_name = nameParts[0];
-          const first_name = nameParts.slice(1).join(' ');
+          const first_name = nameParts.slice(1).join(" ");
           const [city, county, state] = p.missing_location
-            .split(',')
+            .split(",")
             .map((item: string) => item.trim());
 
           return {
@@ -34,9 +34,9 @@ export default function ProfilePage() {
             city,
             county,
             state,
-            date_modified: new Date().toISOString().split('T')[0],
-            classification: p.classification || 'N/A',
-            category_of_missing: p.classification || 'N/A',
+            date_modified: new Date().toISOString().split("T")[0],
+            classification: p.classification || "N/A",
+            category_of_missing: p.classification || "N/A",
           };
         });
 
@@ -48,10 +48,10 @@ export default function ProfilePage() {
         if (foundPerson) {
           setPerson(foundPerson);
         } else {
-          console.error('Person not found');
+          console.error("Person not found");
         }
       } catch (error) {
-        console.error('Error loading person data:', error);
+        console.error("Error loading person data:", error);
       } finally {
         setLoading(false);
       }
@@ -92,20 +92,20 @@ export default function ProfilePage() {
     <div className="min-h-screen p-10">
       <div className="max-w-6xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
         {/* Header with profile picture, name, and case ID */}
-        <div className="bg-blue-600 p-8 text-white flex items-center">
+        <div className="bg-blue-600 p-8 text-white flex flex-col sm:flex-row gap-3 sm:gap-0 items-center">
           {/* Square placeholder for profile picture */}
-          <div className="w-28 h-28 bg-gray-300 rounded-md mr-6 flex items-center justify-center text-sm text-gray-600">
+          <div className="w-28 h-28 bg-gray-300 rounded-md sm:mr-6 flex items-center justify-center text-sm text-gray-600">
             Profile Pic
           </div>
 
           {/* Name and case ID */}
           <div className="flex-grow">
-            <h1 className="text-4xl font-bold">
+            <h1 className="text-4xl font-bold text-center sm:text-left">
               {person.first_name} {person.last_name}
             </h1>
           </div>
 
-          <div className="text-right">
+          <div className="text-center sm:text-right">
             <div className="text-lg opacity-90">Case ID</div>
             <div className="text-2xl font-mono">{person.case_id}</div>
           </div>
@@ -167,7 +167,10 @@ export default function ProfilePage() {
                   label="Missing Since"
                   value={new Date(person.missing_date).toLocaleDateString()}
                 />
-                <InfoItem label="Missing Location" value={person.missing_location} />
+                <InfoItem
+                  label="Missing Location"
+                  value={person.missing_location}
+                />
                 <InfoItem
                   label="Last Updated"
                   value={new Date(person.date_modified).toLocaleDateString()}
@@ -200,8 +203,8 @@ export default function ProfilePage() {
 function InfoItem({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <span className="text-gray-600 font-medium">{label}:</span>{' '}
-      <span className="text-gray-900">{value || 'N/A'}</span>
+      <span className="text-gray-600 font-medium">{label}:</span>{" "}
+      <span className="text-gray-900">{value || "N/A"}</span>
     </div>
   );
 }
@@ -210,9 +213,9 @@ function InfoItem({ label, value }: { label: string; value: string }) {
 function MultiInfoItem({ label, values }: { label: string; values: string[] }) {
   return (
     <div>
-      <span className="text-gray-600 font-medium">{label}:</span>{' '}
+      <span className="text-gray-600 font-medium">{label}:</span>{" "}
       <span className="text-gray-900">
-        {values.length > 0 ? values.join(', ') : 'N/A'}
+        {values.length > 0 ? values.join(", ") : "N/A"}
       </span>
     </div>
   );
