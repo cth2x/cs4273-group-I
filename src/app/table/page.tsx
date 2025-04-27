@@ -152,12 +152,15 @@ export default function TablePage() {
       }
     }
     
+    // FIX #2: Age filtering - Convert age to number for proper comparison
     if (searchParams.has('age')) {
-      const age = searchParams.get('age');
-      if (age) {
-        filtered = filtered.filter(person => 
-          person.age === age
-        );
+      const ageParam = searchParams.get('age');
+      if (ageParam) {
+        const searchAge = parseInt(ageParam);
+        filtered = filtered.filter(person => {
+          const personAge = parseInt(person.age);
+          return !isNaN(personAge) && !isNaN(searchAge) && personAge === searchAge;
+        });
       }
     }
     
@@ -179,30 +182,41 @@ export default function TablePage() {
       }
     }
     
-    
-    if (searchParams.has('missing_location')) {
-      const missing_location = searchParams.get('missing_location')?.toLowerCase();
-      if (missing_location) {
+    // FIX #3: City filtering - Map city to missing_location
+    if (searchParams.has('city')) {
+      const city = searchParams.get('city')?.toLowerCase();
+      if (city) {
         filtered = filtered.filter(person => 
-          person.missing_location && person.missing_location.toLowerCase().includes(missing_location)
+          person.missing_location && person.missing_location.toLowerCase().includes(city)
         );
       }
     }
-
-    // Date range filtering
+  
+    // FIX #5: Date range filtering - Make end date inclusive
     if (searchParams.has('missing_date_from') || searchParams.has('missing_date_to')) {
       const fromDate = searchParams.get('missing_date_from');
       const toDate = searchParams.get('missing_date_to');
       
       filtered = filtered.filter(person => {
+        if (!person.missing_date) return false;
+        
         const personDate = new Date(person.missing_date);
+        const personDateStr = personDate.toISOString().split('T')[0]; // Get YYYY-MM-DD format
         
         if (fromDate && toDate) {
-          return personDate >= new Date(fromDate) && personDate <= new Date(toDate);
+          // Make toDate inclusive by setting time to 23:59:59
+          const toDateObj = new Date(toDate);
+          toDateObj.setHours(23, 59, 59, 999);
+          
+          return personDate >= new Date(fromDate) && personDate <= toDateObj;
         } else if (fromDate) {
           return personDate >= new Date(fromDate);
         } else if (toDate) {
-          return personDate <= new Date(toDate);
+          // Make toDate inclusive by setting time to 23:59:59
+          const toDateObj = new Date(toDate);
+          toDateObj.setHours(23, 59, 59, 999);
+          
+          return personDate <= toDateObj;
         }
         
         return true;
@@ -213,7 +227,7 @@ export default function TablePage() {
       const classification = searchParams.get('classification')?.toLowerCase();
       if (classification) {
         filtered = filtered.filter(person => 
-          person.classification.toLowerCase().includes(classification)
+          person.classification && person.classification.toLowerCase().includes(classification)
         );
       }
     }
@@ -534,10 +548,25 @@ export default function TablePage() {
         </div>
       )}
 
-      <div>
-        <TableComponent columns={columns} data={filteredData.length > 0 ? filteredData : data} />
-      </div>
+      
 
+{filteredData.length === 0 && searchParams && searchParams.size > 0 ? (
+  <div className="mt-8 p-6 text-center bg-gray-50 rounded-lg border border-gray-200">
+    <h3 className="text-xl font-semibold text-gray-700 mb-2">No Results Found</h3>
+    <p className="text-gray-600">
+      No matching records found for your search criteria. Please try different search parameters.
+    </p>
+    <Link href="/table">
+      <button className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
+        Clear Filters
+      </button>
+    </Link>
+  </div>
+) : (
+  <div>
+    <TableComponent columns={columns} data={filteredData} />
+  </div>
+)}
       {showLoginModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-8 rounded-lg shadow-lg w-96">
