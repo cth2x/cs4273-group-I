@@ -72,29 +72,33 @@ export default function TablePage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
 
+  async function loadData() {
+    const result = await fetchMissingPersons();
+    const transformedData = result.map((person: any) => {
+      const nameParts = person.name.split(' ');
+      const first_name = nameParts[0];
+      const last_name = nameParts.slice(1).join(' ');
+      const today = new Date().toISOString().split('T')[0];
+      return {
+        ...person,
+        first_name,
+        last_name,
+        date_modified: today,
+        classification: person.classification || 'N/A',
+        category_of_missing: person.classification || 'N/A',
+      };
+    });
+    
+    setData(transformedData);
+    
+    // Apply initial filtering based on URL search params
+    applyFilters(transformedData);
+  }
+
   useEffect(() => {
-    async function loadData() {
-      const result = await fetchMissingPersons();
-      const transformedData = result.map((person: any) => {
-        const nameParts = person.name.split(' ');
-        const last_name = nameParts[0];
-        const first_name = nameParts.slice(1).join(' ');
-        const today = new Date().toISOString().split('T')[0];
-        return {
-          ...person,
-          first_name,
-          last_name,
-          date_modified: today,
-          classification: person.classification || 'N/A',
-          category_of_missing: person.classification || 'N/A',
-        };
-      });
-      
-      setData(transformedData);
-      
-      // Apply initial filtering based on URL search params
-      applyFilters(transformedData);
-    }
+    loadData();
+    getSessionAndAuth();
+  }, []);
 
     async function getSessionAndAuth() {
       try {
@@ -118,10 +122,6 @@ export default function TablePage() {
         setSession(null);
       }
     }
-
-    loadData();
-    getSessionAndAuth();
-  }, []);
 
   // Function to filter data based on search params
   const applyFilters = (dataToFilter: MissingPerson[]) => {
@@ -304,11 +304,16 @@ export default function TablePage() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ case_id }),
         });
-      } catch (error) {
-        console.error('Error deleting person:', error);
-      }
+        if(response.ok)
+        {
+          alert("Person Deleted");
+          loadData();
+        }
+    } catch (error) {
+      console.error('Error deleting person:', error);
     }
-  };
+  }
+};
 
   const handleEdit = async (case_id: string) => {
     setDrawerOpen(true);
@@ -316,8 +321,8 @@ export default function TablePage() {
       const data = await fetchMissingPersonById(case_id);
       console.log(data.name);
   
-      // Split the name and swap the assignment
-      const [last_name, first_name] = data.name.split(" ");
+      // Split the name
+      const [first_name, last_name] = data.name.split(" ");
   
       // Set the selected person with the swapped name
       setSelectedPerson({
@@ -613,6 +618,7 @@ export default function TablePage() {
         onClose={() => {
           setDrawerOpen(false);
           setSelectedPerson(null);
+          loadData();
         }}
         initialData={selectedPerson || undefined}
       />

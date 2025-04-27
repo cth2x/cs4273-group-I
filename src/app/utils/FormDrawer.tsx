@@ -56,13 +56,12 @@ const defaultFormData: MissingPerson = {
 const FormDrawer: React.FC<FormDrawerProps> = ({ open, onClose, initialData }) => {
   const [formData, setFormData] = useState<MissingPerson>(defaultFormData);
 
-
   useEffect(() => {
     if (initialData) {
       setFormData(initialData);
     } 
     else {
-      console.log("help");
+      console.log("No data to fill");
     }
   }, [initialData, open]);
   
@@ -70,38 +69,42 @@ const FormDrawer: React.FC<FormDrawerProps> = ({ open, onClose, initialData }) =
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
   
     try {
-      // If person exists, delete them
       const existingPerson = await fetchMissingPersonById(formData.case_id);
-      if (existingPerson) {
+  
+      if (existingPerson != null) {
         const deleteResponse = await fetch('/api/deletePerson', {
           method: 'DELETE',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ case_id: formData.case_id }), // send only what's needed
+          body: JSON.stringify({ case_id: formData.case_id }),
         });
-    
+  
         if (!deleteResponse.ok) {
           throw new Error("Error deleting existing person");
         }
       }
   
-      // Add new person
-      const addPerson = await fetch("/api/addPerson", {
+      // After deleting (or if no existing person), add the new person
+      const addResponse = await fetch("/api/addPerson", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
-  
-      onClose();
+      //Success msg/form close
+      if (addResponse.ok) {
+        alert("Persons data submitted!");
+        onClose();
+      } else {
+        alert("Failed to submit data");
+      }
     } catch (err) {
       console.error("Error in form submission:", err);
     }
   };
-  
 
   return (
     <Drawer
