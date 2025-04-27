@@ -152,7 +152,7 @@ export default function TablePage() {
       }
     }
     
-    // FIX #2: Age filtering - Convert age to number for proper comparison
+    
     if (searchParams.has('age')) {
       const ageParam = searchParams.get('age');
       if (ageParam) {
@@ -182,7 +182,7 @@ export default function TablePage() {
       }
     }
     
-    // FIX #3: City filtering - Map city to missing_location
+    
     if (searchParams.has('city')) {
       const city = searchParams.get('city')?.toLowerCase();
       if (city) {
@@ -192,33 +192,32 @@ export default function TablePage() {
       }
     }
   
-    // FIX #5: Date range filtering - Make end date inclusive
+    
     if (searchParams.has('missing_date_from') || searchParams.has('missing_date_to')) {
-      const fromDate = searchParams.get('missing_date_from');
-      const toDate = searchParams.get('missing_date_to');
-      
+      const fromDateStr = searchParams.get('missing_date_from');
+      const toDateStr = searchParams.get('missing_date_to');
+    
+      let fromDate = fromDateStr ? new Date(fromDateStr) : null;
+      let toDate = toDateStr ? new Date(toDateStr) : null;
+    
+      // Move toDate to end of the day (23:59:59) to include entire toDate
+      if (toDate) {
+        toDate.setDate(toDate.getDate() + 1);
+      }
+    
       filtered = filtered.filter(person => {
         if (!person.missing_date) return false;
-        
+    
         const personDate = new Date(person.missing_date);
-        const personDateStr = personDate.toISOString().split('T')[0]; // Get YYYY-MM-DD format
-        
+    
         if (fromDate && toDate) {
-          // Make toDate inclusive by setting time to 23:59:59
-          const toDateObj = new Date(toDate);
-          toDateObj.setHours(23, 59, 59, 999);
-          
-          return personDate >= new Date(fromDate) && personDate <= toDateObj;
+          return personDate > fromDate && personDate <= toDate;
         } else if (fromDate) {
-          return personDate >= new Date(fromDate);
+          return personDate > fromDate;
         } else if (toDate) {
-          // Make toDate inclusive by setting time to 23:59:59
-          const toDateObj = new Date(toDate);
-          toDateObj.setHours(23, 59, 59, 999);
-          
-          return personDate <= toDateObj;
+          return personDate <= toDate;
         }
-        
+    
         return true;
       });
     }
