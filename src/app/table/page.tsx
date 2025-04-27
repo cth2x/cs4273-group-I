@@ -1,11 +1,11 @@
 //Displays table with a persons data
-'use client';
-import { useState, useEffect, FormEvent } from 'react';
-import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
-import TableComponent from '../TableComponent';
-import { fetchMissingPersonById, fetchMissingPersons } from '../utils/fetch';
-import { MRT_ColumnDef } from 'material-react-table';
+"use client";
+import { useState, useEffect, FormEvent } from "react";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import TableComponent from "../TableComponent";
+import { fetchMissingPersonById, fetchMissingPersons } from "../utils/fetch";
+import { MRT_ColumnDef } from "material-react-table";
 import {
   Button,
   IconButton,
@@ -15,15 +15,18 @@ import {
   DialogContentText,
   DialogTitle,
   Box,
-} from '@mui/material';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import LoginIcon from '@mui/icons-material/Login';
-import LogoutIcon from '@mui/icons-material/Logout';
-import AddIcon from '@mui/icons-material/Add';
-import DownloadIcon from '@mui/icons-material/Download';
-import { EditIcon, ListIcon } from 'lucide-react';
-import FormDrawer from '@/utils/FormDrawer';
-import DeleteIcon from '@mui/icons-material/Delete';
+  useMediaQuery,
+  Menu,
+  MenuItem,
+} from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import LoginIcon from "@mui/icons-material/Login";
+import LogoutIcon from "@mui/icons-material/Logout";
+import AddIcon from "@mui/icons-material/Add";
+import DownloadIcon from "@mui/icons-material/Download";
+import { EditIcon, ListIcon, MenuIcon } from "lucide-react";
+import FormDrawer from "@/utils/FormDrawer";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 export type MissingPerson = {
   case_id: string;
@@ -63,7 +66,9 @@ export default function TablePage() {
   const [filteredData, setFilteredData] = useState<MissingPerson[]>([]);
   const [session, setSession] = useState<SessionData>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [selectedPerson, setSelectedPerson] = useState<MissingPerson | null>(null);
+  const [selectedPerson, setSelectedPerson] = useState<MissingPerson | null>(
+    null
+  );
   const searchParams = useSearchParams();
 
   // Authentication and Modal/Dialog State from TableComponent
@@ -75,22 +80,22 @@ export default function TablePage() {
   async function loadData() {
     const result = await fetchMissingPersons();
     const transformedData = result.map((person: any) => {
-      const nameParts = person.name.split(' ');
+      const nameParts = person.name.split(" ");
       const first_name = nameParts[0];
-      const last_name = nameParts.slice(1).join(' ');
-      const today = new Date().toISOString().split('T')[0];
+      const last_name = nameParts.slice(1).join(" ");
+      const today = new Date().toISOString().split("T")[0];
       return {
         ...person,
         first_name,
         last_name,
         date_modified: today,
-        classification: person.classification || 'N/A',
-        category_of_missing: person.classification || 'N/A',
+        classification: person.classification || "N/A",
+        category_of_missing: person.classification || "N/A",
       };
     });
-    
+
     setData(transformedData);
-    
+
     // Apply initial filtering based on URL search params
     applyFilters(transformedData);
   }
@@ -100,28 +105,28 @@ export default function TablePage() {
     getSessionAndAuth();
   }, []);
 
-    async function getSessionAndAuth() {
-      try {
-        // Fetch session
-        const sessionRes = await fetch('/api/session');
-        const sessionData = await sessionRes.json();
-        setSession(sessionData);
-        console.log('Session:', sessionData);
+  async function getSessionAndAuth() {
+    try {
+      // Fetch session
+      const sessionRes = await fetch("/api/session");
+      const sessionData = await sessionRes.json();
+      setSession(sessionData);
+      console.log("Session:", sessionData);
 
-        // Fetch auth status
-        const authResponse = await fetch('/api/auth');
-        if (authResponse.ok) {
-          const authData = await authResponse.json();
-          setIsAuthenticated(authData.isAuthenticated);
-        } else {
-          setIsAuthenticated(false);
-        }
-      } catch (error) {
-        console.error('Error fetching session or auth status:', error);
+      // Fetch auth status
+      const authResponse = await fetch("/api/auth");
+      if (authResponse.ok) {
+        const authData = await authResponse.json();
+        setIsAuthenticated(authData.isAuthenticated);
+      } else {
         setIsAuthenticated(false);
-        setSession(null);
       }
+    } catch (error) {
+      console.error("Error fetching session or auth status:", error);
+      setIsAuthenticated(false);
+      setSession(null);
     }
+  }
 
   // Function to filter data based on search params
   const applyFilters = (dataToFilter: MissingPerson[]) => {
@@ -129,85 +134,92 @@ export default function TablePage() {
       setFilteredData(dataToFilter); // No filters, use all data
       return;
     }
-    
+
     // Filter the data based on search parameters
     let filtered = [...dataToFilter];
-    
+
     // Apply each filter
-    if (searchParams.has('first_name')) {
-      const firstName = searchParams.get('first_name')?.toLowerCase();
+    if (searchParams.has("first_name")) {
+      const firstName = searchParams.get("first_name")?.toLowerCase();
       if (firstName) {
-        filtered = filtered.filter(person => 
+        filtered = filtered.filter((person) =>
           person.first_name.toLowerCase().includes(firstName)
         );
       }
     }
-    
-    if (searchParams.has('last_name')) {
-      const lastName = searchParams.get('last_name')?.toLowerCase();
+
+    if (searchParams.has("last_name")) {
+      const lastName = searchParams.get("last_name")?.toLowerCase();
       if (lastName) {
-        filtered = filtered.filter(person => 
+        filtered = filtered.filter((person) =>
           person.last_name.toLowerCase().includes(lastName)
         );
       }
     }
-    
+
     // FIX #2: Age filtering - Convert age to number for proper comparison
-    if (searchParams.has('age')) {
-      const ageParam = searchParams.get('age');
+    if (searchParams.has("age")) {
+      const ageParam = searchParams.get("age");
       if (ageParam) {
         const searchAge = parseInt(ageParam);
-        filtered = filtered.filter(person => {
+        filtered = filtered.filter((person) => {
           const personAge = parseInt(person.age);
-          return !isNaN(personAge) && !isNaN(searchAge) && personAge === searchAge;
+          return (
+            !isNaN(personAge) && !isNaN(searchAge) && personAge === searchAge
+          );
         });
       }
     }
-    
-    if (searchParams.has('gender')) {
-      const gender = searchParams.get('gender');
+
+    if (searchParams.has("gender")) {
+      const gender = searchParams.get("gender");
       if (gender) {
-        filtered = filtered.filter(person => 
-          person.gender.toLowerCase() === gender.toLowerCase()
+        filtered = filtered.filter(
+          (person) => person.gender.toLowerCase() === gender.toLowerCase()
         );
       }
     }
-    
-    if (searchParams.has('race')) {
-      const race = searchParams.get('race')?.toLowerCase();
+
+    if (searchParams.has("race")) {
+      const race = searchParams.get("race")?.toLowerCase();
       if (race) {
-        filtered = filtered.filter(person => 
+        filtered = filtered.filter((person) =>
           person.race.toLowerCase().includes(race)
         );
       }
     }
-    
+
     // FIX #3: City filtering - Map city to missing_location
-    if (searchParams.has('city')) {
-      const city = searchParams.get('city')?.toLowerCase();
+    if (searchParams.has("city")) {
+      const city = searchParams.get("city")?.toLowerCase();
       if (city) {
-        filtered = filtered.filter(person => 
-          person.missing_location && person.missing_location.toLowerCase().includes(city)
+        filtered = filtered.filter(
+          (person) =>
+            person.missing_location &&
+            person.missing_location.toLowerCase().includes(city)
         );
       }
     }
-  
+
     // FIX #5: Date range filtering - Make end date inclusive
-    if (searchParams.has('missing_date_from') || searchParams.has('missing_date_to')) {
-      const fromDate = searchParams.get('missing_date_from');
-      const toDate = searchParams.get('missing_date_to');
-      
-      filtered = filtered.filter(person => {
+    if (
+      searchParams.has("missing_date_from") ||
+      searchParams.has("missing_date_to")
+    ) {
+      const fromDate = searchParams.get("missing_date_from");
+      const toDate = searchParams.get("missing_date_to");
+
+      filtered = filtered.filter((person) => {
         if (!person.missing_date) return false;
-        
+
         const personDate = new Date(person.missing_date);
-        const personDateStr = personDate.toISOString().split('T')[0]; // Get YYYY-MM-DD format
-        
+        const personDateStr = personDate.toISOString().split("T")[0]; // Get YYYY-MM-DD format
+
         if (fromDate && toDate) {
           // Make toDate inclusive by setting time to 23:59:59
           const toDateObj = new Date(toDate);
           toDateObj.setHours(23, 59, 59, 999);
-          
+
           return personDate >= new Date(fromDate) && personDate <= toDateObj;
         } else if (fromDate) {
           return personDate >= new Date(fromDate);
@@ -215,36 +227,39 @@ export default function TablePage() {
           // Make toDate inclusive by setting time to 23:59:59
           const toDateObj = new Date(toDate);
           toDateObj.setHours(23, 59, 59, 999);
-          
+
           return personDate <= toDateObj;
         }
-        
+
         return true;
       });
     }
-    
-    if (searchParams.has('classification')) {
-      const classification = searchParams.get('classification')?.toLowerCase();
+
+    if (searchParams.has("classification")) {
+      const classification = searchParams.get("classification")?.toLowerCase();
       if (classification) {
-        filtered = filtered.filter(person => 
-          person.classification && person.classification.toLowerCase().includes(classification)
+        filtered = filtered.filter(
+          (person) =>
+            person.classification &&
+            person.classification.toLowerCase().includes(classification)
         );
       }
     }
-    
-    if (searchParams.has('tribe')) {
-      const tribe = searchParams.get('tribe')?.toLowerCase();
+
+    if (searchParams.has("tribe")) {
+      const tribe = searchParams.get("tribe")?.toLowerCase();
       if (tribe) {
-        filtered = filtered.filter(person => 
-          person.tribes && 
-          person.tribes.some(t => t.toLowerCase().includes(tribe))
+        filtered = filtered.filter(
+          (person) =>
+            person.tribes &&
+            person.tribes.some((t) => t.toLowerCase().includes(tribe))
         );
       }
     }
-    
+
     setFilteredData(filtered);
   };
-  
+
   // Update effect to run when search params change
   useEffect(() => {
     if (data.length > 0) {
@@ -272,8 +287,8 @@ export default function TablePage() {
   async function handleLogin(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    const response = await fetch('/api/login', {
-      method: 'POST',
+    const response = await fetch("/api/login", {
+      method: "POST",
       body: formData,
     });
 
@@ -281,63 +296,64 @@ export default function TablePage() {
       setShowLoginModal(false);
       window.location.reload();
     } else {
-      console.error('Login failed');
+      console.error("Login failed");
     }
   }
 
   const handleLogout = async () => {
     try {
       setIsLoggingOut(true);
-      const response = await fetch('/api/logout', { method: 'POST' });
+      const response = await fetch("/api/logout", { method: "POST" });
       if (response.ok) {
         window.location.reload();
       } else {
-        console.error('Logout failed');
+        console.error("Logout failed");
         setIsLoggingOut(false);
         setOpenLogoutDialog(false);
       }
     } catch (error) {
-      console.error('Logout failed:', error);
+      console.error("Logout failed:", error);
       setIsLoggingOut(false);
       setOpenLogoutDialog(false);
     }
   };
 
   const openDrawer = (person: MissingPerson | null = null) => {
-    console.log('Opening Drawer with Person:', person);
+    console.log("Opening Drawer with Person:", person);
     setSelectedPerson(person);
     setDrawerOpen(true);
   };
 
   const handleDelete = async (case_id: string) => {
-    const confirmation = window.confirm("Are you sure you want to delete this person?");
+    const confirmation = window.confirm(
+      "Are you sure you want to delete this person?"
+    );
     if (confirmation) {
       try {
-        const response = await fetch('/api/deletePerson', {
-          method: 'DELETE',
-          headers: { 'Content-Type': 'application/json' },
+        const response = await fetch("/api/deletePerson", {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ case_id }),
         });
-        if(response.ok)
-        {
+        if (response.ok) {
           alert("Person Deleted");
           loadData();
         }
-    } catch (error) {
-      console.error('Error deleting person:', error);
+      } catch (error) {
+        console.error("Error deleting person:", error);
+      }
     }
-  }
-};
+  };
 
   const handleEdit = async (case_id: string) => {
     setDrawerOpen(true);
     try {
       const data = await fetchMissingPersonById(case_id);
       console.log(data.name);
-  
+
       // Split the name
       const [first_name, last_name] = data.name.split(" ");
-  
+
       // Set the selected person with the swapped name
       setSelectedPerson({
         ...data,
@@ -345,18 +361,17 @@ export default function TablePage() {
         last_name,
       });
     } catch (err) {
-      console.error('Failed to fetch full person data', err);
+      console.error("Failed to fetch full person data", err);
     }
   };
-  
 
   let columns: MRT_ColumnDef<MissingPerson>[] = [];
 
-  if (session && session.role === 'admin') {
+  if (session && session.role === "admin") {
     columns = [
       {
-        header: 'Edit',
-        id: 'actions',
+        header: "Edit",
+        id: "actions",
         enableSorting: false,
         enableColumnFilter: false,
         Cell: ({ row }) => (
@@ -372,44 +387,44 @@ export default function TablePage() {
         ),
         size: 60,
       },
-      { accessorKey: 'case_id', header: 'ID' },
-      { accessorKey: 'first_name', header: 'First Name' },
-      { accessorKey: 'last_name', header: 'Last Name' },
-      { accessorKey: 'age', header: 'Age', filterVariant: 'range-slider' },
-      { accessorKey: 'gender', header: 'Sex' },
-      { accessorKey: 'race', header: 'Race / Ethnicity' },
+      { accessorKey: "case_id", header: "ID" },
+      { accessorKey: "first_name", header: "First Name" },
+      { accessorKey: "last_name", header: "Last Name" },
+      { accessorKey: "age", header: "Age", filterVariant: "range-slider" },
+      { accessorKey: "gender", header: "Sex" },
+      { accessorKey: "race", header: "Race / Ethnicity" },
       {
         accessorFn: (originalRow) => new Date(originalRow.missing_date),
-        header: 'Date Missing',
+        header: "Date Missing",
         Cell: ({ cell }) => cell.getValue<Date>().toLocaleDateString(),
-        filterVariant: 'date-range',
+        filterVariant: "date-range",
       },
-      { accessorKey: 'missing_location', header: 'Missing Location' },
+      { accessorKey: "missing_location", header: "Missing Location" },
       {
-        accessorKey: 'tribe_statuses',
-        header: 'Tribal Statuses',
-        Cell: ({ row }) => row.original.tribe_statuses?.join(', ') || 'N/A',
-      },
-      {
-        accessorKey: 'tribes',
-        header: 'Associated Tribes',
-        Cell: ({ row }) => row.original.tribes?.join(', ') || 'N/A',
-        filterVariant: 'select',
+        accessorKey: "tribe_statuses",
+        header: "Tribal Statuses",
+        Cell: ({ row }) => row.original.tribe_statuses?.join(", ") || "N/A",
       },
       {
-        accessorKey: 'classification',
-        header: 'Category of Missing',
-        Cell: ({ row }) => row.original.classification || 'N/A',
+        accessorKey: "tribes",
+        header: "Associated Tribes",
+        Cell: ({ row }) => row.original.tribes?.join(", ") || "N/A",
+        filterVariant: "select",
+      },
+      {
+        accessorKey: "classification",
+        header: "Category of Missing",
+        Cell: ({ row }) => row.original.classification || "N/A",
       },
       {
         accessorFn: (originalRow) => new Date(originalRow.date_modified),
-        header: 'Date modified',
-        filterVariant: 'date-range',
+        header: "Date modified",
+        filterVariant: "date-range",
         Cell: ({ cell }) => cell.getValue<Date>().toLocaleDateString(),
       },
       {
-        header: 'Delete',
-        id: 'delete',
+        header: "Delete",
+        id: "delete",
         enableSorting: false,
         enableColumnFilter: false,
         Cell: ({ row }) => (
@@ -427,43 +442,59 @@ export default function TablePage() {
     ];
   } else {
     columns = [
-      { accessorKey: 'case_id', header: 'ID' },
-      { accessorKey: 'first_name', header: 'First Name' },
-      { accessorKey: 'last_name', header: 'Last Name' },
-      { accessorFn: (originalRow) => parseInt(originalRow.age), header: 'Age', filterVariant: 'range' },
-      { accessorKey: 'gender', header: 'Sex' },
-      { accessorKey: 'race', header: 'Race / Ethnicity' },
+      { accessorKey: "case_id", header: "ID" },
+      { accessorKey: "first_name", header: "First Name" },
+      { accessorKey: "last_name", header: "Last Name" },
+      {
+        accessorFn: (originalRow) => parseInt(originalRow.age),
+        header: "Age",
+        filterVariant: "range",
+      },
+      { accessorKey: "gender", header: "Sex" },
+      { accessorKey: "race", header: "Race / Ethnicity" },
       {
         accessorFn: (originalRow) => new Date(originalRow.missing_date),
-        header: 'Date Missing',
+        header: "Date Missing",
         Cell: ({ cell }) => cell.getValue<Date>().toLocaleDateString(),
-        filterVariant: 'date-range',
+        filterVariant: "date-range",
       },
-      { accessorKey: 'missing_location', header: 'Missing Location' },
+      { accessorKey: "missing_location", header: "Missing Location" },
       {
-        accessorKey: 'tribe_statuses',
-        header: 'Tribal Statuses',
-        Cell: ({ row }) => row.original.tribe_statuses?.join(', ') || 'N/A',
-      },
-      {
-        accessorKey: 'tribes',
-        header: 'Associated Tribes',
-        Cell: ({ row }) => row.original.tribes?.join(', ') || 'N/A',
-        filterVariant: 'select',
+        accessorKey: "tribe_statuses",
+        header: "Tribal Statuses",
+        Cell: ({ row }) => row.original.tribe_statuses?.join(", ") || "N/A",
       },
       {
-        accessorKey: 'classification',
-        header: 'Category of Missing',
-        Cell: ({ row }) => row.original.classification || 'N/A',
+        accessorKey: "tribes",
+        header: "Associated Tribes",
+        Cell: ({ row }) => row.original.tribes?.join(", ") || "N/A",
+        filterVariant: "select",
+      },
+      {
+        accessorKey: "classification",
+        header: "Category of Missing",
+        Cell: ({ row }) => row.original.classification || "N/A",
       },
       {
         accessorFn: (originalRow) => new Date(originalRow.date_modified),
-        header: 'Date modified',
-        filterVariant: 'date-range',
+        header: "Date modified",
+        filterVariant: "date-range",
         Cell: ({ cell }) => cell.getValue<Date>().toLocaleDateString(),
       },
     ];
   }
+
+  // If the user is an admin and on mobile, change the styling slightly to make options more visible/clear
+  const isMobile = useMediaQuery("(max-width:768px)");
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
 
   return (
     <div className="p-6 h-full">
@@ -475,10 +506,11 @@ export default function TablePage() {
             startIcon={<ArrowBackIcon />}
             size="medium"
             sx={{
-              minWidth: '100px',
-              backgroundColor: '#1976D2',
-              '&:hover': { backgroundColor: '#1565C0' },
-            }}>
+              minWidth: "100px",
+              backgroundColor: "#1976D2",
+              "&:hover": { backgroundColor: "#1565C0" },
+            }}
+          >
             Back
           </Button>
         </Link>
@@ -487,47 +519,104 @@ export default function TablePage() {
           Missing Persons Table
         </h1>
 
-        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-          {session && session.role === 'admin' && (
-          <>
-            <Link href="/admin">
-              <Button
-                variant="contained"
-                startIcon={<ListIcon />}
-                size="medium"
-              >
-                View Requests
-              </Button>
-            </Link>
-            <Button
-              variant="contained"
-              onClick={() => openDrawer()}
-              startIcon={<AddIcon />}
-              size="medium">
-              Add Person
-            </Button>
-          </>
+        <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+          {session && session.role === "admin" && (
+            <>
+              {isMobile ? (
+                <>
+                  <IconButton onClick={handleMenuOpen}>
+                    <MenuIcon />
+                  </IconButton>
+                  <Menu
+                    anchorEl={anchorEl}
+                    open={Boolean(anchorEl)}
+                    onClose={handleMenuClose}
+                    PaperProps={{
+                      className: "p-2",
+                    }}
+                  >
+                    <MenuItem onClick={handleMenuClose}>
+                      <Link href="/admin" className="flex items-center gap-2">
+                        <ListIcon fontSize="small" />
+                        View Requests
+                      </Link>
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => {
+                        openDrawer();
+                        handleMenuClose();
+                      }}
+                      className="flex items-center gap-2"
+                    >
+                      <AddIcon fontSize="small" />
+                      Add Person
+                    </MenuItem>
+                    {isAuthenticated && (
+                      <MenuItem
+                        onClick={() => {
+                          handleLogoutClick();
+                          handleMenuClose();
+                        }}
+                        className="flex items-center gap-2"
+                      >
+                        <LogoutIcon fontSize="small" />
+                        Logout
+                      </MenuItem>
+                    )}
+                  </Menu>
+                </>
+              ) : (
+                <>
+                  <Link href="/admin">
+                    <Button
+                      variant="contained"
+                      startIcon={<ListIcon />}
+                      size="medium"
+                    >
+                      View Requests
+                    </Button>
+                  </Link>
+                  <Button
+                    variant="contained"
+                    onClick={() => openDrawer()}
+                    startIcon={<AddIcon />}
+                    size="medium"
+                    className="w-fit"
+                  >
+                    Add Person
+                  </Button>
+                </>
+              )}
+            </>
           )}
-          {isAuthenticated ? (
-            <Button
-              variant="contained"
-              color="primary"
-              startIcon={<LogoutIcon />}
-              onClick={handleLogoutClick}
-              size="medium"
-              sx={{ minWidth: '100px' }}>
-              Logout
-            </Button>
-          ) : (
-            <Button
-              variant="contained"
-              color="primary"
-              startIcon={<LoginIcon />}
-              onClick={handleLoginClick}
-              size="medium"
-              sx={{ minWidth: '100px' }}>
-              Admin Login
-            </Button>
+
+          {/* Always show logout/login normally if not mobile-admin */}
+          {(!isMobile || session?.role !== "admin") && (
+            <>
+              {isAuthenticated ? (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  startIcon={<LogoutIcon />}
+                  onClick={handleLogoutClick}
+                  size="medium"
+                  sx={{ minWidth: "100px" }}
+                >
+                  Logout
+                </Button>
+              ) : (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  startIcon={<LoginIcon />}
+                  onClick={handleLoginClick}
+                  size="medium"
+                  sx={{ minWidth: "100px" }}
+                >
+                  Admin Login
+                </Button>
+              )}
+            </>
           )}
         </Box>
       </div>
@@ -548,25 +637,26 @@ export default function TablePage() {
         </div>
       )}
 
-      
-
-{filteredData.length === 0 && searchParams && searchParams.size > 0 ? (
-  <div className="mt-8 p-6 text-center bg-gray-50 rounded-lg border border-gray-200">
-    <h3 className="text-xl font-semibold text-gray-700 mb-2">No Results Found</h3>
-    <p className="text-gray-600">
-      No matching records found for your search criteria. Please try different search parameters.
-    </p>
-    <Link href="/table">
-      <button className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
-        Clear Filters
-      </button>
-    </Link>
-  </div>
-) : (
-  <div>
-    <TableComponent columns={columns} data={filteredData} />
-  </div>
-)}
+      {filteredData.length === 0 && searchParams && searchParams.size > 0 ? (
+        <div className="mt-8 p-6 text-center bg-gray-50 rounded-lg border border-gray-200">
+          <h3 className="text-xl font-semibold text-gray-700 mb-2">
+            No Results Found
+          </h3>
+          <p className="text-gray-600">
+            No matching records found for your search criteria. Please try
+            different search parameters.
+          </p>
+          <Link href="/table">
+            <button className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
+              Clear Filters
+            </button>
+          </Link>
+        </div>
+      ) : (
+        <div>
+          <TableComponent columns={columns} data={filteredData} />
+        </div>
+      )}
       {showLoginModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-8 rounded-lg shadow-lg w-96">
@@ -574,7 +664,8 @@ export default function TablePage() {
               <h3 className="text-xl font-semibold">Admin Login</h3>
               <button
                 onClick={handleCloseLoginModal}
-                className="text-gray-500 hover:text-gray-700">
+                className="text-gray-500 hover:text-gray-700"
+              >
                 ✕
               </button>
             </div>
@@ -603,7 +694,8 @@ export default function TablePage() {
               </div>
               <button
                 type="submit"
-                className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold">
+                className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold"
+              >
                 Sign In
               </button>
             </form>
@@ -615,20 +707,23 @@ export default function TablePage() {
         open={openLogoutDialog}
         onClose={handleCloseDialog}
         aria-labelledby="logout-dialog-title"
-        aria-describedby="logout-dialog-description">
+        aria-describedby="logout-dialog-description"
+      >
         <DialogTitle
           id="logout-dialog-title"
-          sx={{ textAlign: 'center', pb: 1 }}>
+          sx={{ textAlign: "center", pb: 1 }}
+        >
           Confirm Logout
         </DialogTitle>
         <DialogContent sx={{ pt: 0, pb: 1 }}>
           <DialogContentText
             id="logout-dialog-description"
-            sx={{ textAlign: 'center' }}>
+            sx={{ textAlign: "center" }}
+          >
             Are you sure you want to log out?
           </DialogContentText>
         </DialogContent>
-        <DialogActions sx={{ justifyContent: 'center', pt: 0, pb: 2 }}>
+        <DialogActions sx={{ justifyContent: "center", pt: 0, pb: 2 }}>
           <Button onClick={handleCloseDialog} color="primary">
             Cancel
           </Button>
@@ -636,8 +731,9 @@ export default function TablePage() {
             onClick={handleLogout}
             color="error"
             variant="contained"
-            disabled={isLoggingOut}>
-            {isLoggingOut ? 'Logging out...' : 'Logout'}
+            disabled={isLoggingOut}
+          >
+            {isLoggingOut ? "Logging out..." : "Logout"}
           </Button>
         </DialogActions>
       </Dialog>
