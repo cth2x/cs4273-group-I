@@ -1,7 +1,11 @@
 import { NextResponse } from 'next/server';
-import connection from '../../lib/db'; 
+import {getSession} from '@/lib/session'
+import connection from '@/lib/db';
+
 
 export async function POST(req: Request) {
+
+  
   try {
     const data = await req.json();
     

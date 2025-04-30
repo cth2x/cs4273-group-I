@@ -1,7 +1,7 @@
 import {NextRequest, NextResponse} from 'next/server'
 import {getSession} from '@/lib/session'
 
-const protectedRoutes = ['/admin']
+const protectedRoutes = ['/admin', '/api/addPerson', '/api/deletePerson']
 
 export default async function middleware(req: NextRequest) {
 
