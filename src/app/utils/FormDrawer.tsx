@@ -53,7 +53,7 @@ const defaultFormData: MissingPerson = {
   date_modified: "",
 };
 
-const FormDrawer: React.FC<FormDrawerProps> = ({ open, onClose, initialData }) => {
+const FormDrawer: React.FC<FormDrawerProps> = ({ open, onClose, initialData, title }) => {
   const [formData, setFormData] = useState<MissingPerson>(defaultFormData);
 
   useEffect(() => {
@@ -127,7 +127,7 @@ const FormDrawer: React.FC<FormDrawerProps> = ({ open, onClose, initialData }) =
           fontWeight={"bold"}
           className="text-center"
         >
-          Add Person
+          {title}
         </Typography>
         <IconButton onClick={onClose}>
           <CloseIcon />

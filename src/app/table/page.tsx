@@ -77,6 +77,8 @@ export default function TablePage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
 
+  const [editingPerson, setEditingPerson] = useState(false);
+
   async function loadData() {
     const result = await fetchMissingPersons();
     const transformedData = result.map((person: any) => {
@@ -342,6 +344,7 @@ export default function TablePage() {
   };
 
   const handleEdit = async (case_id: string) => {
+    setEditingPerson(true);
     setDrawerOpen(true);
     try {
       const data = await fetchMissingPersonById(case_id);
@@ -737,11 +740,13 @@ export default function TablePage() {
       <FormDrawer
         open={drawerOpen}
         onClose={() => {
+	  setEditingPerson(false)
           setDrawerOpen(false);
           setSelectedPerson(null);
           loadData();
         }}
-        initialData={selectedPerson || undefined}
+        initialData={selectedPerson}
+	title={editingPerson ? "Edit Person" : "Add Person"}
       />
     </div>
   );
