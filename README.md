@@ -4,6 +4,7 @@
 Our project constructs an public Oklahoma missing persons database, keeping information such as photos, demographics, and last contact information, and search and export functionality. Found cases are deleted to adhere to laws.
 
 ## Technologies Used
+## Note: The live version of Missing Persons is no longer available as the hosting credits for Railway and Vercel have expired. While the application is not currently deployed, you are welcome to explore the source code in this repository. If you'd like to run the project locally, setup instructions are provided below.
 ### MySQL
 Since our project heavily relies on a database to display our information the database chosen needs to be able to handle a large amount of data efficiently. It also needs to be able to filter data and sort it. These factors led us to choose an SQL-based database and we decided on MySQL to be a good choice as it is a free option that seemed to offer good scalability. 
 
