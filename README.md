@@ -25,9 +25,9 @@ Latest version of Node.js, or docker.
 cd CS4273_Group_I
 ```
 
-### Without docker:
+### Without docker
 
-3. Install dependencies
+3. Install dependencies:
 
 ```bash
 npm install
@@ -40,14 +40,14 @@ npm run dev
 ```
 
 
-### With docker:
+### With docker
 
-1. Start docker image.:
+1. Start docker image
 ```bash
 docker compose up
 ```
 
-2. Install deps:
+2. Install deps
 
 ```bash
 docker exec -it name_of_container sh -c "npm install"
