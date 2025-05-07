@@ -5,7 +5,7 @@ Our project constructs an public Oklahoma missing persons database, keeping info
 
 ## Technologies Used
 > **Note:** The live version of *Missing Persons* is no longer available, as the hosting credits for Railway, Vercel, and AWS have expired. While the application is not currently deployed, you are welcome to explore the source code in this repository. Database setup for this project has been provided in the .sql and can be imported. Docker will need to have updated host settings but If you'd like to run the project locally, setup instructions are provided below.
-### My
+### MySQL
 Since our project heavily relies on a database to display our information the database chosen needs to be able to handle a large amount of data efficiently. It also needs to be able to filter data and sort it. These factors led us to choose an SQL-based database and we decided on MySQL to be a good choice as it is a free option that seemed to offer good scalability. 
 
 ### Next.js
@@ -15,34 +15,8 @@ To build a responsive and dynamic front-end, we chose Next.js, a popular React f
 We chose Docker because our team works on different operating systems, and Docker enables us to simplify deployment, ensuring consistency across all devices. Additionally, Docker’s scalability makes it an excellent choice, allowing our database and application infrastructure to grow seamlessly as our project expands.
 
 ## Dependencies
- "dependencies": {
-    "@mui/icons-material": "^6.4.2",
-    "@mui/material": "^6.4.2",
-    "@mui/x-date-pickers": "^7.25.0",
-    "@prisma/client": "^6.3.1",
-    "cookie": "^1.0.2",
-    "date-fns": "^4.1.0",
-    "dayjs": "^1.11.13",
-    "iron-session": "^8.0.4",
-    "lucide-react": "^0.475.0",
-    "material-react-table": "^3.1.0",
-    "mysql2": "^3.12.0",
-    "next": "15.1.6",
-    "prisma": "^6.3.1",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
-  },
-  "devDependencies": {
-    "@playwright/test": "^1.50.1",
-    "@types/node": "20.17.16",
-    "@types/react": "19.0.8",
-    "@types/react-dom": "^19",
-    "@types/stylis": "^4.2.7",
-    "postcss": "^8",
-    "shadcn-ui": "^0.9.4",
-    "tailwindcss": "^3.4.1",
-    "typescript": "5.7.3"
-  }
+Latest version of Node.js, or docker. 
+
 
 ## Setup Instructions
 1. Clone the repository with `git clone https://github.com/cth2x/CS4273_Group_I.git`
@@ -50,24 +24,49 @@ We chose Docker because our team works on different operating systems, and Docke
   ```bash
 cd CS4273_Group_I
 ```
-Locally (Without Docker){
-Install dependencies
-npm run dev
-Goto http://localhost:3000 to see project
 
-Then run containers with docker:
+### Without docker:
 
-Build container initially (first time):
+3. Install dependencies
+
 ```bash
-docker compose up --build
+npm install
 ```
 
-Running every time afterwords:
+4. Run development website
 
+```bash
+npm run dev
+```
+
+
+### With docker:
+
+1. Start docker image.:
 ```bash
 docker compose up
 ```
 
+2. Install deps:
+
+```bash
+docker exec -it name_of_container sh -c "npm install"
+```
+
+Note: 
+
+The following environment variables must be set if running with node, or edited in the docker-compose.yml if using docker.
+
+```bash
+MYSQL_HOST
+MYSQL_USER
+MYSQL_PASSWORD
+MYSQL_DATABASE
+```
+
+### Website
+
+After following the above steps view the website at http://localhost:3000
 
 
 ## Team Contributers
@@ -78,7 +77,6 @@ Noah Zinn - Product Owner
 Cole Hicks - Quality Assurance
 
 Carson Siemens - SM1
-
 Tyler Vuong - SM2
 
 Muhammad Ali - SM3
